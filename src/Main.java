@@ -1,40 +1,31 @@
+//jython utilise python 2.7 et biopython 1.76 dernière version qui supporte python 2.7
+import java.util.ArrayList;
+import java.util.List;
+import org.python.util.PythonInterpreter;
+
+import outils.Node;
+import outils.Sequence;
+import outils.TypeSeq;
+import outils.Upgma;
+
+
 public class Main {
     public static void main(String[] args) throws Exception {
-        // String ATU79210 = "ATGC";
-        // String AAK64201 = "TTGC";
-        // String CAB96345 = "ACCG";
-        // String CBW48591 = "TACG";
-        String[][] tabSeq = {
-            {"A","T","G","C"},
-            {"T","T","G","C"},
-            {"A","C","C","G"},
-            {"T","A","C","G"}
-        };
-        Float[][] matriceD = new Float[tabSeq.length][tabSeq.length];
-        Float countDiff= 0.f;
-        //i correspond à la première séquence de la comparaison
-        for (int i=0; i<tabSeq.length-1; i++){
-            int k = i+1;
-            //k correspond à la deuxième séquence de la comparaison
-            for (; k<tabSeq.length; k++){
-                //j correspond à la colonne des éléments comparés
-                for (int j=0; j<tabSeq[i].length; j++){
-                    if (tabSeq[i][j]!=tabSeq[k][j])
-                        countDiff++;
-                    // System.out.println(tabSeq[i][j]);
-                    // System.out.println(tabSeq[k][j]);
-                    // System.out.println("");
-                }
-                matriceD[i][k] = countDiff;
-                //réinitialise le compteur pour les prochaines séquences à comparer
-                countDiff = 0.f;
-            }
-        }
-        for (int i=0; i<matriceD.length; i++){
-            for (int j=0; j<matriceD[i].length; j++){
-                System.out.print(matriceD[i][j] + " ");
-            }
-            System.out.println("");
-        }
+        //initialise sequences
+        Sequence seq1 = new Sequence("seq1", "ATGC", TypeSeq.ADN);
+        Sequence seq2 = new Sequence("seq2", "TTGC", TypeSeq.ADN);
+        Sequence seq3 = new Sequence("seq3", "ACCG", TypeSeq.ADN);
+        Sequence seq4 = new Sequence("seq4", "TACG", TypeSeq.ADN);
+        //initialise liste sequence
+        ArrayList<Sequence> listSeq = new ArrayList<Sequence>(List.of(seq1,seq2,seq3,seq4));
+        //initialise matrice distance et liste noeud
+        Float[][] matriceD = new Float[listSeq.size()][listSeq.size()];
+        ArrayList<Node> listNoeud = new ArrayList<Node>();
+        //
+        //Upgma resultUpgma = new Upgma(listSeq, matriceD, listNoeud);
+
+        //PythonInterpreter pyInterp = new PythonInterpreter();
+        //pyInterp.execfile("C:\\Users\\walid\\Programmation Java\\Licence pro Bioinfo\\UASB01 Projet tuteure\\Logiciel_Arbre_Phylo\\src\\Python_scripts\\Script.py");
     }
+
 }
