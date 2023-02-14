@@ -1,3 +1,4 @@
+*.json
 #Python files
 *.py
 # Compiled class file

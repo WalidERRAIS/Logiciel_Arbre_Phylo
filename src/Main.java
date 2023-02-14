@@ -21,11 +21,25 @@ public class Main {
         //initialise matrice distance et liste noeud
         Float[][] matriceD = new Float[listSeq.size()][listSeq.size()];
         ArrayList<Node> listNoeud = new ArrayList<Node>();
-        //
-        //Upgma resultUpgma = new Upgma(listSeq, matriceD, listNoeud);
+        
+        //test 2
+        Sequence seqA = new Sequence("seqA", "ATCGTGGTACTG", TypeSeq.ADN);
+        Sequence seqB = new Sequence("seqB", "CCGGAGAACTAG", TypeSeq.ADN);
+        Sequence seqC = new Sequence("seqC", "AACGTGCTACTG", TypeSeq.ADN);
+        Sequence seqD = new Sequence("seqD", "ATGGTGAAAGTG", TypeSeq.ADN);
+        Sequence seqE = new Sequence("seqE", "CCGGAAAACTTG", TypeSeq.ADN);
+        Sequence seqF = new Sequence("seqF", "TGGCCCTGTATC", TypeSeq.ADN);
 
-        //PythonInterpreter pyInterp = new PythonInterpreter();
-        //pyInterp.execfile("C:\\Users\\walid\\Programmation Java\\Licence pro Bioinfo\\UASB01 Projet tuteure\\Logiciel_Arbre_Phylo\\src\\Python_scripts\\Script.py");
+        //initialise liste sequence
+        ArrayList<Sequence> listSeq2 = new ArrayList<Sequence>(List.of(seqA,seqB,seqC,seqD, seqE, seqF));
+        //initialise matrice distance et liste noeud
+        Float[][] matriceD2 = new Float[listSeq2.size()][listSeq2.size()];
+        ArrayList<Node> listNoeud2 = new ArrayList<Node>();
+
+        Upgma resultUpgma = new Upgma(listSeq, matriceD, listNoeud);
+
+        // PythonInterpreter pyInterp = new PythonInterpreter()
+        // pyInterp.execfile("C:\\Users\\walid\\Programmation Java\\Licence pro Bioinfo\\UASB01 Projet tuteure\\Logiciel_Arbre_Phylo\\src\\Python_scripts\\Script.py");
     }
 
 }

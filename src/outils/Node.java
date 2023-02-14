@@ -1,5 +1,6 @@
 package outils;
 
+
 public class Node{
     private Sequence sequence;
     private Node enfant1;
@@ -16,8 +17,10 @@ public class Node{
     public Node(Node n1, Node n2){
         this.enfant1 = n1;
         this.enfant2 = n2;
+        this.sequence = null;
+        this.hauteur = null;
     }
-    
+
     public Sequence getObjSequence() {
         return sequence;
     }
@@ -49,8 +52,6 @@ public class Node{
     public void setHauteur(Float hauteur) {
         this.hauteur = hauteur;
     }
-
-    
 
     @Override
     public String toString() {
