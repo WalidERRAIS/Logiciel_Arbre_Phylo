@@ -1,7 +1,7 @@
 //jython utilise python 2.7 et biopython 1.76 dernière version qui supporte python 2.7
 import java.util.ArrayList;
 import java.util.List;
-import org.python.util.PythonInterpreter;
+// import org.python.util.PythonInterpreter;
 
 import outils.Node;
 import outils.Sequence;
@@ -36,10 +36,11 @@ public class Main {
         Float[][] matriceD2 = new Float[listSeq2.size()][listSeq2.size()];
         ArrayList<Node> listNoeud2 = new ArrayList<Node>();
 
-        Upgma resultUpgma = new Upgma(listSeq, matriceD, listNoeud);
+        Upgma resultUpgma = new Upgma(listSeq2, matriceD2, listNoeud2);
 
         // PythonInterpreter pyInterp = new PythonInterpreter()
         // pyInterp.execfile("C:\\Users\\walid\\Programmation Java\\Licence pro Bioinfo\\UASB01 Projet tuteure\\Logiciel_Arbre_Phylo\\src\\Python_scripts\\Script.py");
+        
     }
 
 }

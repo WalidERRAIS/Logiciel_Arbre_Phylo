@@ -11,15 +11,15 @@ public class Upgma {
 
     public Upgma(ArrayList<Sequence> listSeq, Float[][] matriceD, ArrayList<Node> listNoeud){
         listNoeud = initialiseListNode(listSeq, listNoeud);
-        // System.out.println("taille initiale liste noeud : "+listNoeud.size());
+        System.out.println("taille initiale liste noeud : "+listNoeud.size());
+        System.out.println("");
         matriceD = initialiseMatriceD(listNoeud, matriceD);
         Float min = 0.f;
-        // affichageMatriceD(matriceD);
         while (listNoeud.size()>=2){
             if (listNoeud.size()>2){
                 //copie la liste de noeud précédente pour le calcul de la nouvelle matrice de distances
                 this.listNoeudPreced = new ArrayList<Node>(listNoeud);
-                // affichageMatriceD(matriceD);
+                affichageMatriceD(matriceD);
                 min = minMatriceD(listNoeud, matriceD);
 
                 //créer un noeud parent avec les deux noeuds les plus proches
@@ -27,14 +27,14 @@ public class Upgma {
                 //retire les deux noeuds regroupés
                 removeNode(this.indiceNoeud1, this.indiceNoeud2-1, listNoeud);
 
-                // System.out.println("distance minimale : "+min);
-                // System.out.println("taille liste noeud apres clustering : "+listNoeud.size());
-                //affichageArbre(listNoeud);
-                // System.out.println("hauteur noeud avant cluster : "+listNoeud.get(listNoeud.size()-1).getHauteur());
+                System.out.println("distance minimale : "+min);
+                System.out.println("taille liste noeud apres clustering : "+listNoeud.size());
+
+                System.out.println("longueur branche noeud avant cluster : "+listNoeud.get(listNoeud.size()-1).getHauteur());
                 //hauteur noeud parent égale moyenne des distances des deux enfants
-                listNoeud.get(listNoeud.size()-1).setHauteur(calculHauteur(min));
-                // System.out.println("hauteur noeud apres cluster : "+listNoeud.get(listNoeud.size()-1).getHauteur());
-                // System.out.println("");
+                listNoeud.get(listNoeud.size()-1).setHauteur(calculLongueurBranche(min));
+                System.out.println("longueur branche noeud apres cluster : "+listNoeud.get(listNoeud.size()-1).getHauteur());
+                System.out.println("");
                 matriceD = reCalculMatriceD(listNoeud, matriceD);
 
             }
@@ -46,14 +46,13 @@ public class Upgma {
                 //retire les deux noeuds regroupés
                 removeNode(this.indiceNoeud1, this.indiceNoeud2-1, listNoeud);
 
-                // System.out.println("distance minimale : "+min);
-                // System.out.println("taille liste noeud apres clustering : "+listNoeud.size());
-                //affichageArbre(listNoeud);
-                // System.out.println("hauteur noeud racine avant cluster : "+this.racine.getHauteur());
+                System.out.println("distance minimale : "+min);
+                System.out.println("taille liste noeud apres clustering : "+listNoeud.size());
+                System.out.println("longueur branche noeud racine avant cluster : "+this.racine.getHauteur());
                 //hauteur noeud parent égale moyenne des distances des deux enfants
-                racine.setHauteur(calculHauteur(min));
-                // System.out.println("hauteur noeud racine apres cluster : "+this.racine.getHauteur());
-                // System.out.println("");
+                racine.setHauteur(calculLongueurBranche(min));
+                System.out.println("longueur branche noeud racine apres cluster : "+this.racine.getHauteur());
+                System.out.println("");
             }
         }
         printArbre(System.out);
@@ -61,14 +60,12 @@ public class Upgma {
 
     
     /**
-     * Calcul la hauteur du noeud.
-     * @param hauteurEnfant1 la hauteur de l'enfant 1.
-     * @param hauteurEnfant2 la hauteur de l'enfant 2.
+     * Calcul la longueur de la branche du noeud en faisant la moyenne des distances des deux enfants.
      * @param distance la distance entre les deux enfants.
-     * @return la hauteur calculée. 
+     * @return la longueur de la branche du noeud. 
      */
-    public Float calculHauteur(Float distance){
-        return 0.5f*(distance);
+    public Float calculLongueurBranche(Float distance){
+        return 0.5f*distance;
     }
     
     public String traversePreOrder() {
@@ -76,7 +73,7 @@ public class Upgma {
             return "";
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("root (distance "+this.racine.getHauteur()+")");
+        sb.append("root (Longueur branche "+this.racine.getHauteur()+")");
     
         String pointerRight = "└──";
         String pointerLeft = (this.racine.getEnfant2() != null) ? "├──" : "└──";
@@ -96,8 +93,8 @@ public class Upgma {
                 sb.append(node.getObjSequence().getEnTete());
             }
             else if (node.getObjSequence()==null){
-                //ajoute distance noeud
-                sb.append("node (distance "+node.getHauteur()+")");
+                //ajoute longueur branche du noeud
+                sb.append("node(Longueur branche "+node.getHauteur()+")");
             }
 
             StringBuilder paddingBuilder = new StringBuilder(padding);
@@ -117,27 +114,9 @@ public class Upgma {
     }
 
     public void printArbre(PrintStream os) {
-        os.print(traversePreOrder());
+        os.println(traversePreOrder());
     }
 
-    public void affichageArbre(ArrayList<Node> listNoeud){
-        // String cross = "├─";
-        // String cornerBot = "└─ ";
-        // String cornerTop = "┌─ ";
-        // String vertical = "│";
-        // String space = " ";
-
-        for (Node n : listNoeud){
-            if (n.getEnfant1()!=null && n.getEnfant2()!=null){
-                System.out.println(n.getEnfant1().getObjSequence().getEnTete());
-                System.out.println(n.getEnfant2().getObjSequence().getEnTete());
-
-            }
-            else{
-                System.out.println(n.getObjSequence().getEnTete());
-            }
-        }
-    }
 
     /**
      * Créer un noeud pour chaque séquence et le stocke dans la liste des noeuds.
@@ -153,42 +132,18 @@ public class Upgma {
     }
 
     /**
-     * Renvoie l'indice du noeud dans la précédente liste de noeuds avec l'entete donné.
-     * @param entete l'entete de la séquence à chercher.
-     * @return l'indice du noeud.
-     */
-    public int indexOfEnTeteSeq(String entete){
-        int index = -1;
-        for (int i=0; i<this.listNoeudPreced.size(); i++){
-            //si le noeud est une séquence, on regarde si c'est le même entete.
-            if (this.listNoeudPreced.get(i).getObjSequence()!=null){
-                if (this.listNoeudPreced.get(i).getObjSequence().getEnTete()==entete){
-                    index = i;
-                    break;
-                }
-            }
-            //si le noeud possède des enfants, on regarde quel enfant à le même entete.
-            else{
-                if (this.listNoeudPreced.get(i).getEnfant1().getObjSequence().getEnTete()==entete || this.listNoeudPreced.get(i).getEnfant2().getObjSequence().getEnTete()==entete){
-                    index = i;
-                    break;
-                }
-            }
-        }
-        return index;
-    }
-
-    /**
      * Renvoie la nouvelle matrice de distances après clustering.
      * @param listNoeud la nouvelle liste de noeuds.
      * @param matriceD la matrice de distances.
      * @return la nouvelle matrice calculée.
      */
     public Float[][] reCalculMatriceD(ArrayList<Node> listNoeud, Float[][] matriceD) {
+        //copie la précédente matrice de distances.
         Float[][] oldMatriceD = new Float[matriceD.length][];
         for (int i = 0; i < matriceD.length; i++) {
             oldMatriceD[i] = matriceD[i].clone();
         }
+        //initialise matrice suivante
         matriceD = new Float[listNoeud.size()][listNoeud.size()];
 
         //i correspond au premier noeud de la comparaison.
@@ -207,58 +162,84 @@ public class Upgma {
                 int indiceKEnfant1 = 0;
                 int indiceKEnfant2 = 0;
 
+                //si i et k sont le même noeud
                 if (listNoeud.get(i)==listNoeud.get(k))
                         matriceD[i][k] = 0.f;
-
-                //si le noeud est une séquence.
+                
+                //si les deux noeuds sont des séquences.
                 else if (listNoeud.get(i).getObjSequence()!=null && listNoeud.get(k).getObjSequence()!=null){
-                    indiceI = indexOfEnTeteSeq(listNoeud.get(i).getObjSequence().getEnTete());
-                    indiceK = indexOfEnTeteSeq(listNoeud.get(k).getObjSequence().getEnTete());
+                    // indiceI = indexOfEnTeteSeq(listNoeud.get(i).getObjSequence().getEnTete());
+                    indiceI = this.listNoeudPreced.indexOf(listNoeud.get(i));
+                    // indiceK = indexOfEnTeteSeq(listNoeud.get(k).getObjSequence().getEnTete());
+                    indiceK = this.listNoeudPreced.indexOf(listNoeud.get(k));
+
                     //recupere la distance des noeuds dans la précédente matrice de distances.
                     matriceD[i][k] = oldMatriceD[indiceI][indiceK];
                 }
-                //si le noeud i possède des enfants.
+                
+                //si seulement i à des enfants 
                 else if (listNoeud.get(i).getObjSequence()==null && listNoeud.get(k).getObjSequence()!=null){
-                    indiceIEnfant1 = indexOfEnTeteSeq(listNoeud.get(i).getEnfant1().getObjSequence().getEnTete());
-                    indiceIEnfant2 = indexOfEnTeteSeq(listNoeud.get(i).getEnfant2().getObjSequence().getEnTete());
-                    indiceK = indexOfEnTeteSeq(listNoeud.get(k).getObjSequence().getEnTete());
-                    //on calcule la moyenne des distances entre k et les enfants de i.
-                    matriceD[i][k] = (oldMatriceD[indiceIEnfant1][indiceK]+oldMatriceD[indiceIEnfant2][indiceK])/2;
-                }
-                //si le noeud k possède des enfants.
-                else if (listNoeud.get(k).getObjSequence()==null && listNoeud.get(i).getObjSequence()!=null){
-                    indiceKEnfant1 = indexOfEnTeteSeq(listNoeud.get(k).getEnfant1().getObjSequence().getEnTete());
-                    indiceKEnfant2 = indexOfEnTeteSeq(listNoeud.get(k).getEnfant2().getObjSequence().getEnTete());
-                    indiceI = indexOfEnTeteSeq(listNoeud.get(i).getObjSequence().getEnTete());
-                    //on calcule la moyenne des distances entre i et les enfants de k.
-                    matriceD[i][k] = (oldMatriceD[indiceI][indiceKEnfant1]+oldMatriceD[indiceI][indiceKEnfant2])/2;
-                }
-                //si i et k possèdent des enfants.
-                else{
-                    //on calcule la moyenne des distances entre les enfants du dernier cluster formé et le second noeud qui possède des enfants.
-                    //trouver si le dernier cluster formé est le noeud i ou k, 
-                    //on compare l'entete de l'enfant 1 du dernier cluster avec l'entete de l'enfant 1 de i et k.
+                    indiceK = this.listNoeudPreced.indexOf(listNoeud.get(k));
+                    //seulement i à des enfants et il est le dernier cluster formé 
+                    if (listNoeud.get(listNoeud.size()-1)==listNoeud.get(i)){
+                        indiceIEnfant1 = this.listNoeudPreced.indexOf(listNoeud.get(i).getEnfant1());
+                        indiceIEnfant2 = this.listNoeudPreced.indexOf(listNoeud.get(i).getEnfant2());
+                        matriceD[i][k] = (oldMatriceD[indiceIEnfant1][indiceK]+oldMatriceD[indiceIEnfant2][indiceK])/2;
 
-                    //si entete des enfants du dernier cluster égale entete des enfants de i alors i est le dernier cluster formé.
-                    //donc on calcule la moyenne des distances entre les enfants de i et le cluster k.
-                    if(listNoeud.get(listNoeud.size()-1).getEnfant1().getObjSequence().getEnTete()==listNoeud.get(i).getEnfant1().getObjSequence().getEnTete()
-                    && listNoeud.get(listNoeud.size()-1).getEnfant2().getObjSequence().getEnTete()==listNoeud.get(i).getEnfant2().getObjSequence().getEnTete()){
-                        indiceIEnfant1 = indexOfEnTeteSeq(listNoeud.get(i).getEnfant1().getObjSequence().getEnTete());
-                        indiceIEnfant2 = indexOfEnTeteSeq(listNoeud.get(i).getEnfant2().getObjSequence().getEnTete());
-                        //besoin de l'indice que pour un des deux enfants car les deux enfants du cluster k sont au même indice
-                        indiceKEnfant1 = indexOfEnTeteSeq(listNoeud.get(k).getEnfant1().getObjSequence().getEnTete());
-                        matriceD[i][k] = (oldMatriceD[indiceIEnfant1][indiceKEnfant1]+oldMatriceD[indiceIEnfant2][indiceKEnfant1])/2;
                     }
-                    //si entete des enfants du dernier cluster égale entete des enfants de k alors k est le dernier cluster formé.
-                    //donc on calcule la moyenne des distances entre les enfants de k et le cluster i.
-                    else if (listNoeud.get(listNoeud.size()-1).getEnfant1().getObjSequence().getEnTete()==listNoeud.get(k).getEnfant1().getObjSequence().getEnTete()
-                    && listNoeud.get(listNoeud.size()-1).getEnfant2().getObjSequence().getEnTete()==listNoeud.get(k).getEnfant2().getObjSequence().getEnTete()){
-                        indiceKEnfant1 = indexOfEnTeteSeq(listNoeud.get(k).getEnfant1().getObjSequence().getEnTete());
-                        indiceKEnfant2 = indexOfEnTeteSeq(listNoeud.get(k).getEnfant2().getObjSequence().getEnTete());
-                        //besoin de l'indice que pour un des deux enfants car les deux enfants du cluster i sont au même indice
-                        indiceIEnfant1 = indexOfEnTeteSeq(listNoeud.get(i).getEnfant1().getObjSequence().getEnTete());
-                        matriceD[i][k] = (oldMatriceD[indiceIEnfant1][indiceKEnfant1]+oldMatriceD[indiceIEnfant1][indiceKEnfant1])/2;
+                    //seulement i à des enfants mais n'est pas le dernier cluster formé
+                    else{
+                        indiceI = this.listNoeudPreced.indexOf(listNoeud.get(i));
+                        matriceD[i][k] = (oldMatriceD[indiceI][indiceK]+oldMatriceD[indiceI][indiceK])/2;
+
                     }
+                    
+                }
+
+                //si seulement k à des enfants
+                else if (listNoeud.get(k).getObjSequence()==null && listNoeud.get(i).getObjSequence()!=null){
+                    indiceI = this.listNoeudPreced.indexOf(listNoeud.get(i));
+                    //seulement k à des enfants et il est le dernier cluster formé 
+                    if (listNoeud.get(listNoeud.size()-1)==listNoeud.get(k)){
+                        indiceKEnfant1 = this.listNoeudPreced.indexOf(listNoeud.get(k).getEnfant1());
+                        indiceKEnfant2 = this.listNoeudPreced.indexOf(listNoeud.get(k).getEnfant2());
+                        matriceD[i][k] = (oldMatriceD[indiceKEnfant1][indiceI]+oldMatriceD[indiceKEnfant2][indiceI])/2;
+
+                    }
+                    //seulement k à des enfants mais n'est pas le dernier cluster formé
+                    else{
+                        indiceK = this.listNoeudPreced.indexOf(listNoeud.get(k));
+                        matriceD[i][k] = (oldMatriceD[indiceK][indiceI]+oldMatriceD[indiceK][indiceI])/2;
+
+                    }
+                }
+
+                //les deux noeuds i et k ont des enfants
+                else{
+                    //les deux noeuds ont des enfants et i est le dernier cluster formé
+                    if (listNoeud.get(listNoeud.size()-1)==listNoeud.get(i)){
+                        indiceK = this.listNoeudPreced.indexOf(listNoeud.get(k));
+                        indiceIEnfant1 = this.listNoeudPreced.indexOf(listNoeud.get(i).getEnfant1());
+                        indiceIEnfant2 = this.listNoeudPreced.indexOf(listNoeud.get(i).getEnfant2());
+                        matriceD[i][k] = (oldMatriceD[indiceIEnfant1][indiceK]+oldMatriceD[indiceIEnfant2][indiceK])/2;
+
+                    }
+                    //les deux noeuds ont des enfants et k est le dernier cluster formé
+                    else if (listNoeud.get(listNoeud.size()-1)==listNoeud.get(k)){
+                        indiceI = this.listNoeudPreced.indexOf(listNoeud.get(i));
+                        indiceKEnfant1 = this.listNoeudPreced.indexOf(listNoeud.get(k).getEnfant1());
+                        indiceKEnfant2 = this.listNoeudPreced.indexOf(listNoeud.get(k).getEnfant2());
+                        matriceD[i][k] = (oldMatriceD[indiceKEnfant1][indiceI]+oldMatriceD[indiceKEnfant2][indiceI])/2;
+
+                    }
+                    //les deux noeuds ont des enfants et aucun des deux n'est le dernier cluster formé
+                    else{
+                        indiceI = this.listNoeudPreced.indexOf(listNoeud.get(i));
+                        indiceK = this.listNoeudPreced.indexOf(listNoeud.get(k));
+                        matriceD[i][k] = (oldMatriceD[indiceI][indiceK]+oldMatriceD[indiceI][indiceK])/2;
+
+                    }
+
                 }
             }
         }

@@ -5,20 +5,20 @@ public class Node{
     private Sequence sequence;
     private Node enfant1;
     private Node enfant2;
-    private Float hauteur;
+    private Float longueurBranche;
 
     public Node(Sequence sequence) {
         this.sequence = sequence;
         this.enfant1 = null;
         this.enfant2 = null;
-        this.hauteur = 0.f;
+        this.longueurBranche = 0.f;
     }
 
     public Node(Node n1, Node n2){
         this.enfant1 = n1;
         this.enfant2 = n2;
         this.sequence = null;
-        this.hauteur = null;
+        this.longueurBranche = null;
     }
 
     public Sequence getObjSequence() {
@@ -46,16 +46,16 @@ public class Node{
     }
 
     public Float getHauteur() {
-        return this.hauteur;
+        return this.longueurBranche;
     }
     
-    public void setHauteur(Float hauteur) {
-        this.hauteur = hauteur;
+    public void setHauteur(Float longueurBranche) {
+        this.longueurBranche = longueurBranche;
     }
 
     @Override
     public String toString() {
-        return "Node : \nenfant1=" + enfant1.sequence.getEnTete() + "\nenfant2=" + enfant2.sequence.getEnTete();
+        return "Node : \nenfant1=" + enfant1.sequence.toString() + "\nenfant2=" + enfant2.sequence.toString();
     }
 
     
