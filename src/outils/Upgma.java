@@ -3,23 +3,36 @@ package outils;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+/**
+ * La classe UPGMA construit un arbre phylogénétique avec l'algorithme UPGMA. 
+ */
 public class Upgma {
+    //liste des noeuds précédents
     private ArrayList<Node> listNoeudPreced;
     //indice des noeuds avec la distance minimale
-    private int indiceNoeud1 = 0, indiceNoeud2 =0;
+    private int indiceNoeud1 = 0, indiceNoeud2 = 0;
+    //racine de l'arbre
     private Node racine;
 
+    /**
+     * Construit un arbre à partir d'une liste de séquence, une matrice de distances et une liste de noeuds.
+     * Initialise la liste de noeuds, la matrice de distances et regroupe les noeuds les plus proches
+     * jusqu'à se qu'il ne reste plus qu'un noeud dans la liste.
+     * @param listSeq
+     * @param matriceD
+     * @param listNoeud
+     */
     public Upgma(ArrayList<Sequence> listSeq, Float[][] matriceD, ArrayList<Node> listNoeud){
         listNoeud = initialiseListNode(listSeq, listNoeud);
-        System.out.println("taille initiale liste noeud : "+listNoeud.size());
-        System.out.println("");
+        // System.out.println("taille initiale liste noeud : "+listNoeud.size());
+        // System.out.println("");
         matriceD = initialiseMatriceD(listNoeud, matriceD);
         Float min = 0.f;
         while (listNoeud.size()>=2){
             if (listNoeud.size()>2){
                 //copie la liste de noeud précédente pour le calcul de la nouvelle matrice de distances
                 this.listNoeudPreced = new ArrayList<Node>(listNoeud);
-                affichageMatriceD(matriceD);
+                // affichageMatriceD(matriceD);
                 min = minMatriceD(listNoeud, matriceD);
 
                 //créer un noeud parent avec les deux noeuds les plus proches
@@ -27,14 +40,13 @@ public class Upgma {
                 //retire les deux noeuds regroupés
                 removeNode(this.indiceNoeud1, this.indiceNoeud2-1, listNoeud);
 
-                System.out.println("distance minimale : "+min);
-                System.out.println("taille liste noeud apres clustering : "+listNoeud.size());
-
-                System.out.println("longueur branche noeud avant cluster : "+listNoeud.get(listNoeud.size()-1).getHauteur());
+                // System.out.println("distance minimale : "+min);
+                // System.out.println("taille liste noeud apres clustering : "+listNoeud.size());
+                // System.out.println("longueur branche noeud avant cluster : "+listNoeud.get(listNoeud.size()-1).getHauteur());
                 //hauteur noeud parent égale moyenne des distances des deux enfants
-                listNoeud.get(listNoeud.size()-1).setHauteur(calculLongueurBranche(min));
-                System.out.println("longueur branche noeud apres cluster : "+listNoeud.get(listNoeud.size()-1).getHauteur());
-                System.out.println("");
+                listNoeud.get(listNoeud.size()-1).setLongueurBranche(min);
+                // System.out.println("longueur branche noeud apres cluster : "+listNoeud.get(listNoeud.size()-1).getHauteur());
+                // System.out.println("");
                 matriceD = reCalculMatriceD(listNoeud, matriceD);
 
             }
@@ -46,13 +58,13 @@ public class Upgma {
                 //retire les deux noeuds regroupés
                 removeNode(this.indiceNoeud1, this.indiceNoeud2-1, listNoeud);
 
-                System.out.println("distance minimale : "+min);
-                System.out.println("taille liste noeud apres clustering : "+listNoeud.size());
-                System.out.println("longueur branche noeud racine avant cluster : "+this.racine.getHauteur());
+                // System.out.println("distance minimale : "+min);
+                // System.out.println("taille liste noeud apres clustering : "+listNoeud.size());
+                // System.out.println("longueur branche noeud racine avant cluster : "+this.racine.getHauteur());
                 //hauteur noeud parent égale moyenne des distances des deux enfants
-                racine.setHauteur(calculLongueurBranche(min));
-                System.out.println("longueur branche noeud racine apres cluster : "+this.racine.getHauteur());
-                System.out.println("");
+                racine.setLongueurBranche(calculLongueurBranche(min));
+                // System.out.println("longueur branche noeud racine apres cluster : "+this.racine.getHauteur());
+                // System.out.println("");
             }
         }
         printArbre(System.out);
@@ -68,15 +80,21 @@ public class Upgma {
         return 0.5f*distance;
     }
     
+    /**
+     * Méthode récursive adaptée du site https://www.baeldung.com/java-print-binary-tree-diagram.
+     * Dessine l'arbre en partant de la racine.
+     * @return la chaîne de caractères représentant l'arbre phylogénétique.
+     */
     public String traversePreOrder() {
         if (this.racine == null) {
             return "";
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("root (Longueur branche "+this.racine.getHauteur()+")");
+        sb.append("root (Longueur branche "+this.racine.getLongueurBranche()+")");
     
         String pointerRight = "└──";
         String pointerLeft = (this.racine.getEnfant2() != null) ? "├──" : "└──";
+
     
         traverseNodes(sb, "", pointerLeft, this.racine.getEnfant1(), this.racine.getEnfant2() != null);
         traverseNodes(sb, "", pointerRight, this.racine.getEnfant2(), false);
@@ -84,6 +102,15 @@ public class Upgma {
         return sb.toString();
     }
 
+    /**
+     * Méthode récursive adaptée du site https://www.baeldung.com/java-print-binary-tree-diagram.
+     * Dessine les sous-arbres.
+     * @param sb la chaîne de caractère.
+     * @param padding le pas.
+     * @param pointer forme des branches.
+     * @param node le noeud de l'arbre.
+     * @param hasRightSibling si le noeud possède un noeud frère.
+     */
     public void traverseNodes(StringBuilder sb, String padding, String pointer, Node node, boolean hasRightSibling) {
         if (node != null) {
             sb.append("\n");
@@ -94,7 +121,7 @@ public class Upgma {
             }
             else if (node.getObjSequence()==null){
                 //ajoute longueur branche du noeud
-                sb.append("node(Longueur branche "+node.getHauteur()+")");
+                sb.append("node(Longueur branche "+node.getLongueurBranche()+")");
             }
 
             StringBuilder paddingBuilder = new StringBuilder(padding);
@@ -103,18 +130,23 @@ public class Upgma {
             } else {
                 paddingBuilder.append("   ");
             }
+            
 
             String paddingForBoth = paddingBuilder.toString();
             String pointerRight = "└──";
             String pointerLeft = (node.getEnfant2() != null) ? "├──" : "└──";
+
 
             traverseNodes(sb, paddingForBoth, pointerLeft, node.getEnfant1(), node.getEnfant2() != null);
             traverseNodes(sb, paddingForBoth, pointerRight, node.getEnfant2(), false);
         }
     }
 
+    /**
+     * Affiche l'arbre.
+     */
     public void printArbre(PrintStream os) {
-        os.println(traversePreOrder());
+        os.println(traversePreOrder()+"\n");
     }
 
 
