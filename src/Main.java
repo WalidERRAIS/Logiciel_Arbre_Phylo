@@ -1,10 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import outils.Node;
 import outils.Sequence;
 import outils.TypeSeq;
-import outils.Upgma;
+import outils.AlgoPhenetique.Upgma;
 
 
 public class Main {
@@ -48,11 +47,7 @@ public class Main {
 
         //initialise liste sequence
         ArrayList<Sequence> listSeq3 = new ArrayList<Sequence>(List.of(HIV_1_group_N, HIV_1_group_O, HIV_1_subtype_A, HIV_1_subtype_B, HIV_1_subtype_C, HIV_1_subtype_D, HIV_2_subtype_A, HIV_2_subtype_B, SIV_chpz, SIV_mac));
-        //initialise matrice distance et liste noeud
-        Float[][] matriceD3 = new Float[listSeq3.size()][listSeq3.size()];
-        ArrayList<Node> listNoeud3 = new ArrayList<Node>();
-
-        Upgma resultUpgma = new Upgma(listSeq3, matriceD3, listNoeud3);        
+        Upgma.upgma(listSeq3);
     }
 
 }
