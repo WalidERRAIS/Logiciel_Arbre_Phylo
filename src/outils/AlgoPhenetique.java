@@ -4,6 +4,13 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 
 public class AlgoPhenetique{
+
+    public static class NJ {
+
+    }
+
+
+
     /**
      * La classe UPGMA construit un arbre phylogénétique avec l'algorithme UPGMA. 
      */
@@ -32,7 +39,6 @@ public class AlgoPhenetique{
                 if (listNoeud.size()>2){
                     //copie la liste de noeud précédente pour le calcul de la nouvelle matrice de distances
                     Upgma.listNoeudPreced = new ArrayList<Node>(listNoeud);
-                    // affichageMatriceD(matriceD);
                     min = minMatriceD(listNoeud, matriceD);
 
                     //créer un noeud parent avec les deux noeuds les plus proches
