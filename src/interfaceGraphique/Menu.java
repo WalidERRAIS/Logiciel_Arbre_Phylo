@@ -185,7 +185,7 @@ public class Menu extends JFrame {
 		/*
 		 * bouton lance alignement multiple
 		 */
-		createBtnRunMultipleAlignment();
+		// createBtnRunMultipleAlignment();
 
 		return internalFrame;
 	}
@@ -479,5 +479,5 @@ public class Menu extends JFrame {
 	// 	btnRunMultipleAlignment.setFont(new Font("SansSerif", Font.PLAIN, 14));
 	// 	btnRunMultipleAlignment.setBounds(7, 436, 218, 36);
 	// 	internalFrame.getContentPane().add(btnRunMultipleAlignment);
-	}
+	// }
 }
