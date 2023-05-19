@@ -3,8 +3,11 @@ package interfaceGraphique;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -30,6 +33,12 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import outils.Sequence;
+import outils.TypeSeq;
 
 
 public class Menu extends JFrame {
@@ -185,7 +194,7 @@ public class Menu extends JFrame {
 		/*
 		 * bouton lance alignement multiple
 		 */
-		// createBtnRunMultipleAlignment();
+		createBtnRunMultipleAlignment();
 
 		return internalFrame;
 	}
@@ -215,11 +224,24 @@ public class Menu extends JFrame {
 	 * Affiche une liste pour choisir le type de séquences
 	 */
 	private void createBoxChoixTypeSequence() {
-		String typeSequence[]= {"PROTEINE", "ADN"};
+		TypeSeq[] typeSequence = new TypeSeq[]{TypeSeq.ADN,TypeSeq.PROTEINE,TypeSeq.ARN};
 		choixTypeSequence = new JComboBox(typeSequence);
 		choixTypeSequence.setBounds(6, 88, 773, 26);
 		internalFrame.getContentPane().add(choixTypeSequence);
+		choixTypeSequence.addActionListener(new ActionListener() {
+			/**
+			 * Récupère l'item selectionné par l'utilisateur.
+			 */
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				choixTypeSequence.setSelectedItem(choixTypeSequence.getSelectedItem());
+			}
+		});
 	}
+
+	// private void print(JComboBox choixTypeSequence2) {
+	// 	System.out.println(choixTypeSequence2.getSelectedItem());
+	// }
 
 	/**
 	 * Affiche un cadre avec l'instruction du format de séquences à entrer
@@ -241,6 +263,24 @@ public class Menu extends JFrame {
 		entrezSequence = new JTextArea();
 		scrollPane.setViewportView(entrezSequence);
 		entrezSequence.setLineWrap(true);
+		entrezSequence.setEditable(true);
+		entrezSequence.getDocument().addDocumentListener(new DocumentListener() {
+			/**
+			 * Récupère les changements dans le champs saisi séquences.
+			 */
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				SwingUtilities.invokeLater(() -> {
+                    entrezSequence.setText(entrezSequence.getText());
+                });
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {}
+		});
 	}
 
 	/**
@@ -435,49 +475,57 @@ public class Menu extends JFrame {
 		gapPenalty.setColumns(10);
 	}
 
-	// /**
-	//  * Affiche un bouton qui au clic lance l'alignement multiple
-	//  */
-	// private void createBtnRunMultipleAlignment() {
-	// 	btnRunMultipleAlignment = new JButton("Lancez Alignement Multiple");
-	// 	btnRunMultipleAlignment.addActionListener(new ActionListener() {
-	// 		/**
-	// 		 * Au clic sur le bouton lance l'alignement multiple des séquences entrées 
-	// 		 */
-	// 		public void actionPerformed(ActionEvent e) {
-	// 			try {
-	// 				String seq = null;
-	// 				//si aucun fichier choisi prend sequence cadre entrer sequence
-	// 				if (sequenceFichier==null)
-	// 					seq= entrezSequence.getText();
-	// 				//si cadre entrer sequence null prend fichier choisi
-	// 				else if (entrezSequence.getText()==null) 
-	// 					seq= sequenceFichier.toString();
-	// 				//si les deux sont pleins prend fichier choisi
-	// 				else if ((sequenceFichier!=null)&&(entrezSequence.getText()!=null))
-	// 					seq= sequenceFichier.toString();
-	// 				//si les deux sont null lance une exception
-	// 				else
-	// 					throw new IllegalArgumentException();
-	// 				//verifie au moins 2 séquences au format fasta
-	// 				int nbSeq= Sequence.nbSequencesFormatFasta(seq);
-	// 				if (nbSeq>=2) {
-	// 					Sequence query = new Sequence(nbSeq, seq, "SequenceQuery",
-	// 							(String) choixTypeSequence.getSelectedItem());
-	// 					query.setNomAllSequences();
-	// 					query.setAllSequences();
-	// 					query.AfficheAllSequences();
-	// 				}	
-	// 				else
-	// 					throw new IllegalArgumentException();
-	// 			}
-	// 			catch (IllegalArgumentException e1) {
-	// 				JOptionPane.showMessageDialog(entrezSequence,"Erreur! Entrez au moins deux séquences au format fasta!","Alert",JOptionPane.WARNING_MESSAGE);     
-	// 			}
-	// 		}
-	// 	});
-	// 	btnRunMultipleAlignment.setFont(new Font("SansSerif", Font.PLAIN, 14));
-	// 	btnRunMultipleAlignment.setBounds(7, 436, 218, 36);
-	// 	internalFrame.getContentPane().add(btnRunMultipleAlignment);
+	/**
+	 * Affiche un bouton qui au clic lance l'alignement multiple
+	 */
+	private void createBtnRunMultipleAlignment() {
+		btnRunMultipleAlignment = new JButton("Lancez Alignement Multiple");
+		btnRunMultipleAlignment.addActionListener(new ActionListener() {
+			/**
+			 * Au clic sur le bouton lance l'alignement multiple des séquences entrées 
+			 */
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String seq = null;
+					//si aucun fichier choisi prend sequence cadre entrer sequence
+					if (sequenceFichier==null)
+						seq= entrezSequence.getText();
+					//si cadre entrer sequence null prend fichier choisi
+					else if (entrezSequence.getText()==null) 
+						seq= sequenceFichier.toString();
+					//si les deux sont pleins prend fichier choisi
+					else if ((sequenceFichier!=null)&&(entrezSequence.getText()!=null))
+						seq= sequenceFichier.toString();
+					//si les deux sont null lance une exception
+					else
+						throw new IllegalArgumentException();
+					//verifie au moins 2 séquences au format fasta
+					int nbSeq= Sequence.nbSequencesFormatFasta(seq);
+					if (nbSeq>=2) {
+						Sequence query = new Sequence(nbSeq, seq, "SequenceQuery"
+							,(TypeSeq) choixTypeSequence.getSelectedItem());
+						query.setEnTeteAllSequence();
+						query.setAllSequences();
+						print(query.printAllSequence());
+					}	
+					else
+						throw new IllegalArgumentException();
+				}
+				catch (IllegalArgumentException e1) {
+					JOptionPane.showMessageDialog(entrezSequence,"Erreur! Entrez au moins deux séquences au format fasta!","Alert",JOptionPane.WARNING_MESSAGE);     
+				}
+			}
+
+			private void print(String printAllSequence) {
+				System.out.println(printAllSequence);
+			}
+		});
+		btnRunMultipleAlignment.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		btnRunMultipleAlignment.setBounds(7, 436, 218, 36);
+		internalFrame.getContentPane().add(btnRunMultipleAlignment);
+	}
+
+	// protected void print(int nbSeq) {
+	// 	System.out.println(nbSeq);
 	// }
 }

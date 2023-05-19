@@ -11,6 +11,8 @@ public class Sequence {
     private String enTete;
     private String sequence;
     private TypeSeq typeSeq;
+    private ArrayList<Sequence> listSeq = new ArrayList<Sequence>();
+
     
     /**
      * Construit une séquence avec un en-tête et un type.
@@ -25,13 +27,13 @@ public class Sequence {
     }
 
     /**
-	 * retourne le nombre de séquence à aligner au format fasta 
+	 * retourne le nombre de séquence au format fasta 
 	 * @param s correspond à la chaîne de caractère entrée par l'utilisateur
 	 * @return nbSequences correspond au nombre de séquence contenu dans la chaîne entrée en paramètre
 	 */
 	public static int nbSequencesFormatFasta(String s) {
 		int nbSequence=0;
-		Pattern fastaPattern= Pattern.compile("^>.+\\n[ABCDEFGHIKLMNPQRSTVWXYZ]+\\n?", Pattern.MULTILINE|Pattern.CASE_INSENSITIVE);
+		Pattern fastaPattern= Pattern.compile("^>.+\\n[ABCDEFGHIKLMNPQRSTVWXYZ-]+\\n?", Pattern.MULTILINE|Pattern.CASE_INSENSITIVE);
 		Matcher fastaMatch = fastaPattern.matcher(s);
 		while (fastaMatch.find()) {
 			nbSequence++;
@@ -40,62 +42,48 @@ public class Sequence {
 	}
 
     /**
-	 * Si au moins deux sequences au format fasta sont entrées créer une sequence query
-	 * contenant toutes les séquences à aligner et fait appel au second constructeur pour créer 
-	 * un tableau de n sequences où chaque indice correspond à une sequence de la query
+	 * Construit une sequence query contenant toutes les séquences et fait appel au second constructeur pour créer 
+	 * une liste de n Sequence où chaque indice correspond à une sequence de la query.
 	 * 
 	 * @param nbSeq correspond au nombre de séquence au format fasta
 	 * @param s correspond à la séquence
 	 * @param n correspond au nom de la séquence
 	 * @param t correspond au type de la séquence (protéine ou adn)
 	 */
-	public Sequence(int nbSeq, String s, String n, String t) {
-		this.sequence= s;
-		this.nomSequence= n;
-		this.typeSequence= t;
-		//Instancie un taleau de sequences avec autant de séquences : Sequence_1, Sequence_i...
-		//et de meme type que la sequence query
-		this.sequences= new Sequence[nbSeq];
-		for (int i=0; i<this.sequences.length; i++) {
-			this.sequences[i]= new Sequence("Sequence_"+(i+1), t);
+	public Sequence(int nbSeq, String sequence, String enTete, TypeSeq typeSeq) {
+		this.sequence= sequence;
+		this.enTete = enTete;
+		this.typeSeq = typeSeq;
+		//Créer une liste de sequences à partir de toutes les sequences dans la query.
+		for (int i=0; i<nbSeq; i++) {
+			this.listSeq.add(new Sequence("Sequence_"+(i+1), "", typeSeq));
 		}
 	}
 
     /**
-	 * modifie le nom des séquences 
+	 * modifie l'enTete de chaque séquences.
 	 */
-	public void setNomAllSequences() {
+	public void setEnTeteAllSequence() {
 		Pattern nomSeqPattern= Pattern.compile("^>.+\\n?", Pattern.MULTILINE);
-		Matcher nomSeqMatch = nomSeqPattern.matcher(this.sequence);
-		for (int i=0; i<this.sequences.length; i++) {
+		Matcher nomSeqMatch = nomSeqPattern.matcher(this.sequence); //pattern à tester dans la query
+		for (int i=0; i<this.listSeq.size(); i++) {
 			if (nomSeqMatch.find()) {
-				//supprime les ">" des noms de séquence
-				this.sequences[i].setNomSequence(nomSeqMatch.group().replace(">", ""));
+				//supprime les chevrons des enTetes des séquences.
+				this.listSeq.get(i).setEnTete(nomSeqMatch.group().replace(">", ""));
 			}
 		}
 	}
 
 	/**
-	 * modifie les séquences
+	 * modifie les séquences.
 	 */
 	public void setAllSequences() {
-		Pattern seqPattern= Pattern.compile("^[ABCDEFGHIKLMNPQRSTVWXYZ]+", Pattern.MULTILINE|Pattern.CASE_INSENSITIVE);
-		Matcher seqMatch = seqPattern.matcher(this.sequence);
-		for (int i=0; i<this.sequences.length; i++) {
+		Pattern seqPattern= Pattern.compile("^[ABCDEFGHIKLMNPQRSTVWXYZ-]+", Pattern.MULTILINE|Pattern.CASE_INSENSITIVE);
+		Matcher seqMatch = seqPattern.matcher(this.sequence); //pattern à tester dans la query
+		for (int i=0; i<this.listSeq.size(); i++) {
 			if (seqMatch.find()) {
-				this.sequences[i].setSequence(seqMatch.group());
+				this.listSeq.get(i).setSequence(seqMatch.group());
 			}
-		}
-	}
-
-    /**
-	 * Affiche le nom , la séquence et le type de chaque sequence contenu dans le tableau de Sequence
-	 */
-	public void AfficheAllSequences() {
-		for (int i=0; i<this.sequences.length; i++) {
-			System.out.println("nom séquence : \n"+this.sequences[i].getNomSequence()+"\n\nsequence : \n"+
-					this.sequences[i].getSequence()+"\n\ntype séquence : \n"
-					+this.sequences[i].getTypeSequence()+"\n");
 		}
 	}
 
@@ -152,17 +140,17 @@ public class Sequence {
      * @param indice l'indice de la séquence à renvoyer.
      * @return la séquence à l'indice donné.
     */
-    public static Sequence getSequenceAt(ArrayList<Sequence> listSeq, int indice) {
-        return listSeq.get(indice);
+    public Sequence getSequenceAt(int indice) {
+        return this.listSeq.get(indice);
     }
 
     /**
      * Retourne les infos pour chaque séquence de la liste.
      * @return les infos de toutes les séquences de la liste.
      */
-    public static String printAllSequence(ArrayList<Sequence> listSeq) {
+    public String printAllSequence() {
         String infos = "";
-        for (Sequence seq: listSeq){
+        for (Sequence seq: this.listSeq){
             infos = infos + seq.toString() + "\n";
         }
         return infos;
