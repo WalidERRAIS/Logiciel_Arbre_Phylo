@@ -12,6 +12,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -43,7 +44,9 @@ import outils.TypeSeq;
 
 public class Menu extends JFrame {
     //Attributs
+	JPanel contentPane;
 	private JInternalFrame internalFrame;
+	private JInternalFrame internalFrameTree;
 	private JLabel labelStepOne;
 	private JLabel labelChoixTypeSequence;
 	private JComboBox choixTypeSequence;
@@ -79,7 +82,7 @@ public class Menu extends JFrame {
 		/*
 		 * Creation et configuration content Pane
 		 */
-		JPanel contentPane = (JPanel) this.getContentPane();
+		contentPane = (JPanel) this.getContentPane();
 		// getContentPane().setLayout(null);
 		contentPane.setLayout(new BorderLayout());
 
@@ -92,6 +95,11 @@ public class Menu extends JFrame {
 		 * Ajout du frame interne Alignement
 		 */
 		contentPane.add(createInternalFrameAlignement(), BorderLayout.CENTER);
+
+		/*
+		 * Ajout du frame interne Tree 
+		 */
+		contentPane.add(createInternalFrameTree(), BorderLayout.CENTER);
 
 	}
 
@@ -111,14 +119,46 @@ public class Menu extends JFrame {
 		 */
 		JButton btnAlign = new JButton("ALIGN");
 		toolBar.add(btnAlign);
+		btnAlign.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				internalFrameTree.setVisible(false);
+				internalFrame.setVisible(true);
+			}
+			
+		});
 
 		/*
 		 * Bouton Phylogeny
 		 */
 		JButton btnPhylogeny = new JButton("PHYLOGENY");
 		toolBar.add(btnPhylogeny);
+		btnPhylogeny.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				internalFrame.setVisible(false);
+				contentPane.add(createInternalFrameAlignement(), BorderLayout.CENTER);
+
+			}
+			
+		});
 
 		return toolBar;
+	}
+
+	/**
+	 * Construction d'un internal frame pour la reconstruction d'arbre.
+	 * @return internalFrameTree retourne le frame interne de reconstruction d'arbre.
+	 */
+	private JInternalFrame createInternalFrameTree(){
+		internalFrameTree = new JInternalFrame("PHYLOGENY", false, true);
+		// internalFrameTree.setBounds(0, 0, 806, 563);
+		internalFrameTree.getContentPane().setLayout(new BorderLayout());
+		// internalFrameTree.setVisible(false);
+
+		return internalFrameTree;
 	}
 
 	/**
@@ -126,10 +166,10 @@ public class Menu extends JFrame {
 	 * @return internalFrame retourne le frame interne d'Alignement
 	 */
 	private JInternalFrame createInternalFrameAlignement() {
-		internalFrame = new JInternalFrame("ALIGNEMENT Multiple");
-		internalFrame.setBounds(79, 0, 806, 563);
-		internalFrame.getContentPane().setLayout(null);
-		internalFrame.setVisible(true);
+		internalFrame = new JInternalFrame("ALIGNEMENT Multiple", false, true);
+		// internalFrame.setBounds(0, 0, 806, 563);
+		internalFrame.getContentPane().setLayout(new BorderLayout());
+		// internalFrame.setVisible(false);
 
 		/*
 		 * Cadre step 1
