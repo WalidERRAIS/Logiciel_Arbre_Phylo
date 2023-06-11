@@ -47,6 +47,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import outils.Sequence;
+import outils.TypeAlgoTree;
 import outils.TypeSeq;
 
 
@@ -82,6 +83,15 @@ public class Menu extends JFrame {
 	JPanel panelGap;
 	JPanel panelFinal;
 	JPanel panelEntrezSequence;
+	private JLabel labelStepOneTree;
+	private JPanel panelLabelStepOneTree;
+	private JLabel labelChoixAlgoTree;
+	private JPanel panelLabelChoixAlgoTree;
+	private JComboBox choixTypeAlgoTree;
+	private JPanel panelChoixTypeAlgoTree;
+	private JLabel labelSequenceFormatTree;
+	private JPanel panelLabelSequenceFormatTree;
+	private JButton btnRunTree;
 	
 
     /**
@@ -108,18 +118,6 @@ public class Menu extends JFrame {
 		 * Ajout de la barre d'outils au content pane
 		 */
 		contentPane.add(createToolBar(), BorderLayout.NORTH);
-
-
-		// /*
-		//  * Ajout du frame interne Alignement
-		//  */
-		// contentPane.add(createInternalFrameAlignement(), BorderLayout.CENTER);
-
-		// /*
-		//  * Ajout du frame interne Tree 
-		//  */
-		// contentPane.add(createInternalFrameTree(), BorderLayout.CENTER);
-
 	}
 	
 
@@ -132,7 +130,6 @@ public class Menu extends JFrame {
 		 * Configuration barre d'outils
 		 */
 		JToolBar toolBar = new JToolBar();
-		// toolBar.setBounds(0, 0, 90, 563);
 		toolBar.setOrientation(SwingConstants.HORIZONTAL);
 		/*
 		 * Bouton Align
@@ -146,17 +143,20 @@ public class Menu extends JFrame {
 			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (internalFrame==null || internalFrame.isClosed() && internalFrameTree==null){
-					contentPane.add(createInternalFrameAlignement());
+				try{
+					if ((internalFrame==null || internalFrame.isClosed()) && internalFrameTree==null){
+						contentPane.add(createInternalFrameAlignement());
+					}
+					else if (internalFrameTree!=null){
+						internalFrameTree.dispose();
+						contentPane.add(createInternalFrameAlignement());
+					}
+					else if (internalFrame.isVisible())
+						throw new IllegalArgumentException();
 				}
-				else if (internalFrameTree!=null && internalFrame!=null){
-					internalFrameTree.dispose();
-					internalFrame.dispose();
-					internalFrameTree = null;
-					internalFrame = null;
-					contentPane.add(createInternalFrameAlignement());
+				catch (IllegalArgumentException e1) {
+					JOptionPane.showMessageDialog(contentPane,"Erreur! Fenêtre déjà ouverte!","Alert",JOptionPane.WARNING_MESSAGE);     
 				}
-				
 			}
 			
 		});
@@ -173,18 +173,21 @@ public class Menu extends JFrame {
 			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (internalFrameTree==null || internalFrameTree.isClosed() && internalFrame==null){
-					contentPane.add(createInternalFrameTree());
+				try{
+					if ((internalFrameTree==null || internalFrameTree.isClosed()) && internalFrame==null){
+						contentPane.add(createInternalFrameTree());
+					}
+					else if (internalFrame!=null){
+						internalFrame.dispose();
+						contentPane.add(createInternalFrameTree());
+					}
+					else if (internalFrameTree.isVisible())
+						throw new IllegalArgumentException();
 				}
-				else if (internalFrame!=null && internalFrameTree!=null){
-					internalFrame.dispose();
-					internalFrameTree.dispose();
-					internalFrame = null;
-					internalFrameTree = null;
-					contentPane.add(createInternalFrameTree());
+				catch (IllegalArgumentException e1) {
+					JOptionPane.showMessageDialog(contentPane,"Erreur! Fenêtre déjà ouverte!","Alert",JOptionPane.WARNING_MESSAGE);     
 				}
 			}
-			
 		});
 
 		return toolBar;
@@ -196,10 +199,166 @@ public class Menu extends JFrame {
 	 */
 	private JInternalFrame createInternalFrameTree(){
 		internalFrameTree = new JInternalFrame("PHYLOGENY", false, true);
-		// internalFrameTree.getContentPane().setLayout(new GridLayout(8,1));
+		internalFrameTree.getContentPane().setLayout(new GridLayout(6,1));
 		internalFrameTree.setVisible(true);
 
+		/*
+		 * Cadre step 1 pour la reconstruction d'arbres
+		 */
+		createLabelStepOneTree();
+
+		/*
+		 * label choix algo reconstruction arbres phylogénétiques
+		 */
+		createLabelChoixAlgoTree();
+
+		/*
+		 * choix type algo reconctruction arbres phylo
+		 */
+		createBoxChoixAlgoTree();
+
+		/*
+		 * cadre instruction format alignement pour la reconctruction
+		 */
+		createLabelSequenceFormatTree();
+
+		/*
+		 * Cadre entrez sequences au format fasta avec barre pour scroll
+		 */
+		createTextAreaEntrezSeqScrollPane(internalFrameTree);
+
+		/*
+		 * popup menu copier coller couper
+		 */
+		createPopupMenuEntrezSeq();		
+
+		/*
+		 * cadre choix d'un fichier contenant les sequences à aligner
+		 */
+		createLabelChoixFichier();
+
+		/*
+		 * affiche aucun fichier choisi par default et modifie avec le nom du fichier choisi
+		 */
+		createLabelfichierChoisi();
+
+		/*
+		 * bouton choix d'un fichier de sequences extension fasta
+		 */
+		createBtnChoisirFichier(internalFrameTree);
+
 		return internalFrameTree;
+	}
+
+	/**
+	 * Affiche un cadre avec l'instruction de l'étape 1
+	 */
+	private void createLabelStepOneTree() {
+		labelStepOneTree = new JLabel("STEP 1 - Entrez les sequences alignées pour la reconstruction d'arbres phylogénétiques");
+		labelStepOneTree.setForeground(new Color(255, 0, 0));
+		labelStepOneTree.setFont(new Font("SansSerif", Font.PLAIN, 16));
+		//ajoute le jlabel au panel et ajoute le panel au frame interne
+		panelLabelStepOneTree = new JPanel();
+		panelLabelStepOneTree.add(labelStepOneTree);
+		internalFrameTree.getContentPane().add(panelLabelStepOneTree);
+	}
+
+	/**
+	 * Affiche un cadre avec l'instruction choix du type de séquences
+	 */
+	private void createLabelChoixAlgoTree() {
+		labelChoixAlgoTree = new JLabel("Sélectionner l'algorithme de reconstruction");
+		labelChoixAlgoTree.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		panelLabelChoixAlgoTree = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panelLabelChoixAlgoTree.add(labelChoixAlgoTree);
+		internalFrameTree.getContentPane().add(panelLabelChoixAlgoTree);
+	}
+
+	/**
+	 * Affiche une liste pour choisir le type d'algos de reconstruction phylo
+	 */
+	private void createBoxChoixAlgoTree() {
+		TypeAlgoTree[] typeAlgoTree = new TypeAlgoTree[]{TypeAlgoTree.UPGMA, TypeAlgoTree.Neighbor_Joining};
+		choixTypeAlgoTree = new JComboBox(typeAlgoTree);
+		choixTypeAlgoTree.setPreferredSize(new Dimension(750, 50));
+		panelChoixTypeAlgoTree = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		panelChoixTypeAlgoTree.add(choixTypeAlgoTree);
+		internalFrameTree.getContentPane().add(panelChoixTypeAlgoTree);
+		choixTypeAlgoTree.addActionListener(new ActionListener() {
+			/**
+			 * Récupère l'item selectionné par l'utilisateur.
+			 */
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				choixTypeAlgoTree.setSelectedItem(choixTypeAlgoTree.getSelectedItem());
+			}
+		});
+		
+	}
+
+	/**
+	 * Affiche un cadre avec l'instruction du format de l'alignement à mettre pour la reconctruction
+	 */
+	private void createLabelSequenceFormatTree() {
+		labelSequenceFormatTree = new JLabel("Entrez les séquences alignées au format fasta");
+		labelSequenceFormatTree.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		panelLabelSequenceFormatTree = new JPanel();
+		panelLabelSequenceFormatTree.setLayout(new FlowLayout(FlowLayout.LEFT));
+		panelLabelSequenceFormatTree.add(labelSequenceFormatTree);
+		internalFrameTree.getContentPane().add(panelLabelSequenceFormatTree);
+	}
+
+
+	//Ajouter bouton choix type sequence !!!!!!!!!!!!!!!!!!
+	/**
+	 * Affiche un bouton qui au clic lance la reconstruction d'arbre phylogénétique
+	 */
+	private void createBtnRunTree() {
+		btnRunTree = new JButton("Construct Tree");
+		btnRunTree.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		panelFinal = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		panelFinal.add(btnRunTree);
+		internalFrameTree.getContentPane().add(panelFinal);
+		btnRunTree.addActionListener(new ActionListener() {
+			/**
+			 * Au clic sur le bouton lance l'alignement multiple des séquences entrées 
+			 */
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String seq = null;
+					//si aucun fichier choisi prend sequence cadre entrer sequence
+					if (sequenceFichier==null)
+						seq= entrezSequence.getText();
+					//si cadre entrer sequence null prend fichier choisi
+					else if (entrezSequence.getText()==null) 
+						seq= sequenceFichier.toString();
+					//si les deux sont pleins prend fichier choisi
+					else if ((sequenceFichier!=null)&&(entrezSequence.getText()!=null))
+						seq= sequenceFichier.toString();
+					//si les deux sont null lance une exception
+					else
+						throw new IllegalArgumentException();
+					//verifie si au moins 2 séquences au format fasta
+					int nbSeq= Sequence.nbSequencesFormatFasta(seq);
+					if (nbSeq>=2) {
+						Sequence query = new Sequence(nbSeq, seq, "SequenceQuery"
+							,(TypeSeq) choixTypeSequence.getSelectedItem());
+						query.setEnTeteAllSequence();
+						query.setAllSequences();
+						// print(query.printAllSequence());
+					}	
+					else
+						throw new IllegalArgumentException();
+				}
+				catch (IllegalArgumentException e1) {
+					JOptionPane.showMessageDialog(entrezSequence,"Erreur! Entrez au moins deux séquences au format fasta!","Alert",JOptionPane.WARNING_MESSAGE);     
+				}
+			}
+
+			// private void print(String printAllSequence) {
+			// 	System.out.println(printAllSequence);
+			// }
+		});
 	}
 
 	/**
@@ -234,7 +393,7 @@ public class Menu extends JFrame {
 		/*
 		 * Cadre entrez sequences au format fasta avec barre pour scroll
 		 */
-		createTextAreaEntrezSeqScrollPane();
+		createTextAreaEntrezSeqScrollPane(internalFrame);
 
 		/*
 		 * popup menu copier coller couper
@@ -254,7 +413,7 @@ public class Menu extends JFrame {
 		/*
 		 * bouton choix d'un fichier de sequences extension fasta
 		 */
-		createBtnChoisirFichier();
+		createBtnChoisirFichier(internalFrame);
 
 		/*
 		 * Cadre step 2
@@ -341,7 +500,7 @@ public class Menu extends JFrame {
 	/**
 	 * Affiche un champs pour y rentrer les séquences
 	 */
-	private void createTextAreaEntrezSeqScrollPane() {
+	private void createTextAreaEntrezSeqScrollPane(JInternalFrame actialFrame) {
 		//le scroll pane permet de visualiser des composants plus grands en mettant des barres de defilement
 		scrollPane = new JScrollPane();
 		panelEntrezSequence = new JPanel(new BorderLayout());
@@ -350,7 +509,7 @@ public class Menu extends JFrame {
 		scrollPane.setViewportView(entrezSequence);
 		entrezSequence.setLineWrap(true);
 		entrezSequence.setEditable(true);
-		internalFrame.getContentPane().add(panelEntrezSequence, BorderLayout.CENTER);
+		actialFrame.getContentPane().add(panelEntrezSequence, BorderLayout.CENTER);
 		entrezSequence.getDocument().addDocumentListener(new DocumentListener() {
 			/**
 			 * Récupère les changements dans le champs saisi séquences.
@@ -484,7 +643,7 @@ public class Menu extends JFrame {
 	 * qui au clic appelle la méthode choixFichier
 	 * @see choixFichier
 	 */
-	private void createBtnChoisirFichier() {
+	private void createBtnChoisirFichier(JInternalFrame actualFrame) {
 		btnChoisirFichier = new JButton("Choisir un fichier");
 		btnChoisirFichier.addActionListener(new ActionListener() {
 			/**
@@ -499,7 +658,7 @@ public class Menu extends JFrame {
 		btnChoisirFichier.setFont(new Font("SansSerif", Font.PLAIN, 14));
 		// btnChoisirFichier.setBounds(330, 286, 135, 28);
 		panelFichier.add(btnChoisirFichier);
-		internalFrame.getContentPane().add(panelFichier);
+		actualFrame.getContentPane().add(panelFichier);
 	}
 
 	/**
