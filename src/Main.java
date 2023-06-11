@@ -14,6 +14,8 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
  * - remplacer par la suite mon calcul des distances (différences entre les séquences ) par la formule de la distance
  *  observée (S = M/L et D = 1 - S)
  * - d’appliquer une correction aux distances avec le modèle Jukes-Cantor
+ * - méthode poids moyen enracinement
+ * - ajouter recuperation sequences en ligne
  */
 public class Main {
     public static void main(String[] args) throws Exception {

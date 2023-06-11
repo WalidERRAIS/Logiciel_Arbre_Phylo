@@ -2,16 +2,23 @@ package interfaceGraphique;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Float;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,6 +27,7 @@ import java.io.FileReader;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -65,6 +73,16 @@ public class Menu extends JFrame {
 	private JLabel labelGapPenalty;
 	private JTextField gapPenalty;
 	private JButton btnRunMultipleAlignment;
+	JPanel panelLabelStepOne;
+	JPanel panelLabelChoixTypeSequence;
+	JPanel panelChoixTypeSequence;
+	JPanel panelLabelSequenceFormat;
+	JPanel panelFichier;
+	JPanel panelLabelStepTwo;
+	JPanel panelGap;
+	JPanel panelFinal;
+	JPanel panelEntrezSequence;
+	
 
     /**
 	 * Construction du Menu principal 
@@ -91,17 +109,19 @@ public class Menu extends JFrame {
 		 */
 		contentPane.add(createToolBar(), BorderLayout.NORTH);
 
-		/*
-		 * Ajout du frame interne Alignement
-		 */
-		contentPane.add(createInternalFrameAlignement(), BorderLayout.CENTER);
 
-		/*
-		 * Ajout du frame interne Tree 
-		 */
-		contentPane.add(createInternalFrameTree(), BorderLayout.CENTER);
+		// /*
+		//  * Ajout du frame interne Alignement
+		//  */
+		// contentPane.add(createInternalFrameAlignement(), BorderLayout.CENTER);
+
+		// /*
+		//  * Ajout du frame interne Tree 
+		//  */
+		// contentPane.add(createInternalFrameTree(), BorderLayout.CENTER);
 
 	}
+	
 
 	/**
 	 * Construction de la barre d'outils
@@ -112,7 +132,7 @@ public class Menu extends JFrame {
 		 * Configuration barre d'outils
 		 */
 		JToolBar toolBar = new JToolBar();
-		toolBar.setBounds(0, 0, 90, 563);
+		// toolBar.setBounds(0, 0, 90, 563);
 		toolBar.setOrientation(SwingConstants.HORIZONTAL);
 		/*
 		 * Bouton Align
@@ -120,11 +140,23 @@ public class Menu extends JFrame {
 		JButton btnAlign = new JButton("ALIGN");
 		toolBar.add(btnAlign);
 		btnAlign.addActionListener(new ActionListener() {
-
+			/*
+			 * Au clic si aucune fenetre n'est ouverte ouvre la fenetre Alignement
+			 * sinon ferme la fenetre Phylogeny
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				internalFrameTree.setVisible(false);
-				internalFrame.setVisible(true);
+				if (internalFrame==null || internalFrame.isClosed() && internalFrameTree==null){
+					contentPane.add(createInternalFrameAlignement());
+				}
+				else if (internalFrameTree!=null && internalFrame!=null){
+					internalFrameTree.dispose();
+					internalFrame.dispose();
+					internalFrameTree = null;
+					internalFrame = null;
+					contentPane.add(createInternalFrameAlignement());
+				}
+				
 			}
 			
 		});
@@ -135,12 +167,22 @@ public class Menu extends JFrame {
 		JButton btnPhylogeny = new JButton("PHYLOGENY");
 		toolBar.add(btnPhylogeny);
 		btnPhylogeny.addActionListener(new ActionListener() {
-
+			/*
+			 * Au clic si aucune fenetre n'est ouverte ouvre la fenetre Phylogeny
+			 * sinon ferme la fenetre Alignement
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				internalFrame.setVisible(false);
-				contentPane.add(createInternalFrameAlignement(), BorderLayout.CENTER);
-
+				if (internalFrameTree==null || internalFrameTree.isClosed() && internalFrame==null){
+					contentPane.add(createInternalFrameTree());
+				}
+				else if (internalFrame!=null && internalFrameTree!=null){
+					internalFrame.dispose();
+					internalFrameTree.dispose();
+					internalFrame = null;
+					internalFrameTree = null;
+					contentPane.add(createInternalFrameTree());
+				}
 			}
 			
 		});
@@ -154,9 +196,8 @@ public class Menu extends JFrame {
 	 */
 	private JInternalFrame createInternalFrameTree(){
 		internalFrameTree = new JInternalFrame("PHYLOGENY", false, true);
-		// internalFrameTree.setBounds(0, 0, 806, 563);
-		internalFrameTree.getContentPane().setLayout(new BorderLayout());
-		// internalFrameTree.setVisible(false);
+		// internalFrameTree.getContentPane().setLayout(new GridLayout(8,1));
+		internalFrameTree.setVisible(true);
 
 		return internalFrameTree;
 	}
@@ -167,9 +208,8 @@ public class Menu extends JFrame {
 	 */
 	private JInternalFrame createInternalFrameAlignement() {
 		internalFrame = new JInternalFrame("ALIGNEMENT Multiple", false, true);
-		// internalFrame.setBounds(0, 0, 806, 563);
-		internalFrame.getContentPane().setLayout(new BorderLayout());
-		// internalFrame.setVisible(false);
+		internalFrame.getContentPane().setLayout(new GridLayout(9,1));
+		internalFrame.setVisible(true);
 
 		/*
 		 * Cadre step 1
@@ -246,8 +286,10 @@ public class Menu extends JFrame {
 		labelStepOne = new JLabel("STEP 1 - Entrez vos sequences à aligner");
 		labelStepOne.setForeground(new Color(255, 0, 0));
 		labelStepOne.setFont(new Font("SansSerif", Font.PLAIN, 16));
-		labelStepOne.setBounds(6, 19, 314, 31);
-		internalFrame.getContentPane().add(labelStepOne);
+		//ajoute le jlabel au panel et ajoute le panel au frame interne
+		panelLabelStepOne = new JPanel();
+		panelLabelStepOne.add(labelStepOne);
+		internalFrame.getContentPane().add(panelLabelStepOne);
 	}
 
 	/**
@@ -256,8 +298,9 @@ public class Menu extends JFrame {
 	private void createLabelChoixTypeSequence() {
 		labelChoixTypeSequence = new JLabel("Sélectionner le type des séquences");
 		labelChoixTypeSequence.setFont(new Font("SansSerif", Font.PLAIN, 14));
-		labelChoixTypeSequence.setBounds(6, 62, 248, 31);
-		internalFrame.getContentPane().add(labelChoixTypeSequence);
+		panelLabelChoixTypeSequence = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panelLabelChoixTypeSequence.add(labelChoixTypeSequence);
+		internalFrame.getContentPane().add(panelLabelChoixTypeSequence);
 	}
 
 	/**
@@ -266,8 +309,10 @@ public class Menu extends JFrame {
 	private void createBoxChoixTypeSequence() {
 		TypeSeq[] typeSequence = new TypeSeq[]{TypeSeq.ADN,TypeSeq.PROTEINE,TypeSeq.ARN};
 		choixTypeSequence = new JComboBox(typeSequence);
-		choixTypeSequence.setBounds(6, 88, 773, 26);
-		internalFrame.getContentPane().add(choixTypeSequence);
+		choixTypeSequence.setPreferredSize(new Dimension(750, 50));
+		panelChoixTypeSequence = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		panelChoixTypeSequence.add(choixTypeSequence);
+		internalFrame.getContentPane().add(panelChoixTypeSequence);
 		choixTypeSequence.addActionListener(new ActionListener() {
 			/**
 			 * Récupère l'item selectionné par l'utilisateur.
@@ -277,11 +322,8 @@ public class Menu extends JFrame {
 				choixTypeSequence.setSelectedItem(choixTypeSequence.getSelectedItem());
 			}
 		});
+		
 	}
-
-	// private void print(JComboBox choixTypeSequence2) {
-	// 	System.out.println(choixTypeSequence2.getSelectedItem());
-	// }
 
 	/**
 	 * Affiche un cadre avec l'instruction du format de séquences à entrer
@@ -289,21 +331,26 @@ public class Menu extends JFrame {
 	private void createLabelSequenceFormat() {
 		labelSequenceFormat = new JLabel("Entrez les séquences au Format Fasta");
 		labelSequenceFormat.setFont(new Font("SansSerif", Font.PLAIN, 14));
-		labelSequenceFormat.setBounds(6, 125, 248, 16);
-		internalFrame.getContentPane().add(labelSequenceFormat);
+		panelLabelSequenceFormat = new JPanel();
+		panelLabelSequenceFormat.setLayout(new FlowLayout(FlowLayout.LEFT));
+		// labelSequenceFormat.setHorizontalAlignment(JLabel.LEFT);
+		panelLabelSequenceFormat.add(labelSequenceFormat);
+		internalFrame.getContentPane().add(panelLabelSequenceFormat);
 	}
 
 	/**
 	 * Affiche un champs pour y rentrer les séquences
 	 */
 	private void createTextAreaEntrezSeqScrollPane() {
+		//le scroll pane permet de visualiser des composants plus grands en mettant des barres de defilement
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(6, 153, 773, 131);
-		internalFrame.getContentPane().add(scrollPane);
+		panelEntrezSequence = new JPanel(new BorderLayout());
+		panelEntrezSequence.add(scrollPane);
 		entrezSequence = new JTextArea();
 		scrollPane.setViewportView(entrezSequence);
 		entrezSequence.setLineWrap(true);
 		entrezSequence.setEditable(true);
+		internalFrame.getContentPane().add(panelEntrezSequence, BorderLayout.CENTER);
 		entrezSequence.getDocument().addDocumentListener(new DocumentListener() {
 			/**
 			 * Récupère les changements dans le champs saisi séquences.
@@ -411,8 +458,12 @@ public class Menu extends JFrame {
 	private void createLabelChoixFichier() {
 		labelChoixFichier = new JLabel("Ou donner le fichier contenant les séquences");
 		labelChoixFichier.setFont(new Font("SansSerif", Font.PLAIN, 14));
-		labelChoixFichier.setBounds(16, 287, 302, 26);
-		internalFrame.getContentPane().add(labelChoixFichier);
+		//ajoute panel dans lequel on ajoutera le bouton fichier et label fichier choisi
+		panelFichier = new JPanel();
+		panelFichier.setLayout(new FlowLayout(FlowLayout.CENTER, 100, 0));
+		// labelStepOne.setHorizontalAlignment(JLabel.CENTER);
+		panelFichier.add(labelChoixFichier);
+		// internalFrame.getContentPane().add(panelFichier);
 	}
 
 	/**
@@ -423,8 +474,9 @@ public class Menu extends JFrame {
 	private void createLabelfichierChoisi() {
 		labelFichierChoisi = new JLabel("Aucun fichier choisi");
 		labelFichierChoisi.setFont(new Font("SansSerif", Font.PLAIN, 14));
-		labelFichierChoisi.setBounds(506, 290, 273, 23);
-		internalFrame.getContentPane().add(labelFichierChoisi);
+		// labelFichierChoisi.setBounds(506, 290, 273, 23);
+		panelFichier.add(labelFichierChoisi);
+		// internalFrame.getContentPane().add(panelFichier);
 	}
 
 	/**
@@ -445,8 +497,9 @@ public class Menu extends JFrame {
 			}
 		});
 		btnChoisirFichier.setFont(new Font("SansSerif", Font.PLAIN, 14));
-		btnChoisirFichier.setBounds(330, 286, 135, 28);
-		internalFrame.getContentPane().add(btnChoisirFichier);
+		// btnChoisirFichier.setBounds(330, 286, 135, 28);
+		panelFichier.add(btnChoisirFichier);
+		internalFrame.getContentPane().add(panelFichier);
 	}
 
 	/**
@@ -491,8 +544,11 @@ public class Menu extends JFrame {
 		labelStepTwo = new JLabel("STEP 2 - Entrez vos paramètres");
 		labelStepTwo.setForeground(new Color(255, 0, 0));
 		labelStepTwo.setFont(new Font("SansSerif", Font.PLAIN, 16));
-		labelStepTwo.setBounds(6, 330, 241, 31);
-		internalFrame.getContentPane().add(labelStepTwo);
+		panelLabelStepTwo = new JPanel();
+		// panelLabelStepTwo.setLayout(new BorderLayout());
+		// labelStepOne.setHorizontalAlignment(JLabel.CENTER);
+		panelLabelStepTwo.add(labelStepTwo);
+		internalFrame.getContentPane().add(panelLabelStepTwo);
 	}
 
 	/**
@@ -501,8 +557,11 @@ public class Menu extends JFrame {
 	private void createLabelGapPenalty() {
 		labelGapPenalty = new JLabel("Gap Penalty : ");
 		labelGapPenalty.setFont(new Font("SansSerif", Font.PLAIN, 14));
-		labelGapPenalty.setBounds(6, 373, 102, 31);
-		internalFrame.getContentPane().add(labelGapPenalty);
+		panelGap = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		// labelStepOne.setHorizontalAlignment(JLabel.CENTER);
+		panelGap.add(labelGapPenalty);
+		// labelGapPenalty.setBounds(6, 373, 102, 31);
+		// internalFrame.getContentPane().add(panelFinal);
 	}
 
 	/**
@@ -511,8 +570,9 @@ public class Menu extends JFrame {
 	private void saisiGapPenalty() {
 		gapPenalty = new JTextField();
 		gapPenalty.setBounds(120, 375, 48, 28);
-		internalFrame.getContentPane().add(gapPenalty);
+		panelGap.add(gapPenalty);
 		gapPenalty.setColumns(10);
+		internalFrame.getContentPane().add(panelGap);
 	}
 
 	/**
@@ -520,6 +580,10 @@ public class Menu extends JFrame {
 	 */
 	private void createBtnRunMultipleAlignment() {
 		btnRunMultipleAlignment = new JButton("Lancez Alignement Multiple");
+		btnRunMultipleAlignment.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		panelFinal = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		panelFinal.add(btnRunMultipleAlignment);
+		internalFrame.getContentPane().add(panelFinal);
 		btnRunMultipleAlignment.addActionListener(new ActionListener() {
 			/**
 			 * Au clic sur le bouton lance l'alignement multiple des séquences entrées 
@@ -539,14 +603,14 @@ public class Menu extends JFrame {
 					//si les deux sont null lance une exception
 					else
 						throw new IllegalArgumentException();
-					//verifie au moins 2 séquences au format fasta
+					//verifie si au moins 2 séquences au format fasta
 					int nbSeq= Sequence.nbSequencesFormatFasta(seq);
 					if (nbSeq>=2) {
 						Sequence query = new Sequence(nbSeq, seq, "SequenceQuery"
 							,(TypeSeq) choixTypeSequence.getSelectedItem());
 						query.setEnTeteAllSequence();
 						query.setAllSequences();
-						print(query.printAllSequence());
+						// print(query.printAllSequence());
 					}	
 					else
 						throw new IllegalArgumentException();
@@ -556,16 +620,10 @@ public class Menu extends JFrame {
 				}
 			}
 
-			private void print(String printAllSequence) {
-				System.out.println(printAllSequence);
-			}
+			// private void print(String printAllSequence) {
+			// 	System.out.println(printAllSequence);
+			// }
 		});
-		btnRunMultipleAlignment.setFont(new Font("SansSerif", Font.PLAIN, 14));
-		btnRunMultipleAlignment.setBounds(7, 436, 218, 36);
-		internalFrame.getContentPane().add(btnRunMultipleAlignment);
+		
 	}
-
-	// protected void print(int nbSeq) {
-	// 	System.out.println(nbSeq);
-	// }
 }

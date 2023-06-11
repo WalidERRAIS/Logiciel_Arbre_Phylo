@@ -27,21 +27,6 @@ public class Sequence {
     }
 
     /**
-	 * retourne le nombre de séquence au format fasta 
-	 * @param s correspond à la chaîne de caractère entrée par l'utilisateur
-	 * @return nbSequences correspond au nombre de séquence contenu dans la chaîne entrée en paramètre
-	 */
-	public static int nbSequencesFormatFasta(String s) {
-		int nbSequence=0;
-		Pattern fastaPattern= Pattern.compile("^>.+\\n[ABCDEFGHIKLMNPQRSTVWXYZ-]+\\n?", Pattern.MULTILINE|Pattern.CASE_INSENSITIVE);
-		Matcher fastaMatch = fastaPattern.matcher(s);
-		while (fastaMatch.find()) {
-			nbSequence++;
-		}
-		return nbSequence;
-	}
-
-    /**
 	 * Construit une sequence query contenant toutes les séquences et fait appel au second constructeur pour créer 
 	 * une liste de n Sequence où chaque indice correspond à une sequence de la query.
 	 * 
@@ -58,6 +43,21 @@ public class Sequence {
 		for (int i=0; i<nbSeq; i++) {
 			this.listSeq.add(new Sequence("Sequence_"+(i+1), "", typeSeq));
 		}
+	}
+
+   /**
+	 * retourne le nombre de séquence au format fasta 
+	 * @param s correspond à la chaîne de caractère entrée par l'utilisateur
+	 * @return nbSequences correspond au nombre de séquence contenu dans la chaîne entrée en paramètre
+	 */
+	public static int nbSequencesFormatFasta(String s) {
+		int nbSequence=0;
+		Pattern fastaPattern= Pattern.compile("^>.+\\n[ABCDEFGHIKLMNPQRSTVWXYZ-]+\\n?", Pattern.MULTILINE|Pattern.CASE_INSENSITIVE);
+		Matcher fastaMatch = fastaPattern.matcher(s);
+		while (fastaMatch.find()) {
+			nbSequence++;
+		}
+		return nbSequence;
 	}
 
     /**
