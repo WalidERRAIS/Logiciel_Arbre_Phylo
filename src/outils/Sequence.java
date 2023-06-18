@@ -12,6 +12,7 @@ public class Sequence {
     private String sequence;
     private TypeSeq typeSeq;
     private ArrayList<Sequence> listSeq = new ArrayList<Sequence>();
+    private Float divergenceNette; //divergence d'une séquence par rapport aux autres.
 
     
     /**
@@ -24,6 +25,7 @@ public class Sequence {
         this.enTete = enTete;
         this.sequence = sequence;
         this.typeSeq = typeSeq;
+        this.divergenceNette = null;
     }
 
     /**
@@ -68,7 +70,7 @@ public class Sequence {
 		Matcher nomSeqMatch = nomSeqPattern.matcher(this.sequence); //pattern à tester dans la query
 		for (int i=0; i<this.listSeq.size(); i++) {
 			if (nomSeqMatch.find()) {
-				//supprime les chevrons des enTetes des séquences.
+				//enregistre la sous-séquence comme en-tête et supprime les chevrons.
 				this.listSeq.get(i).setEnTete(nomSeqMatch.group().replace(">", ""));
 			}
 		}
@@ -82,10 +84,43 @@ public class Sequence {
 		Matcher seqMatch = seqPattern.matcher(this.sequence); //pattern à tester dans la query
 		for (int i=0; i<this.listSeq.size(); i++) {
 			if (seqMatch.find()) {
+                //enregistre la sous-séquence trouvé avec le pattern comme la séquence.
 				this.listSeq.get(i).setSequence(seqMatch.group());
 			}
 		}
 	}
+
+    /**
+     * Renvoie la liste de séquences
+     * @return la liste de séquences
+     */
+    public ArrayList<Sequence> getListSequence(){
+        return this.listSeq;
+    }
+
+    /**
+     * Renvoie la séquence à l'indice donné.
+     * @param indice l'indice de la séquence à renvoyer.
+     * @return la séquence à l'indice donné.
+    */
+    public Sequence getSequenceAt(int indice) {
+        return this.listSeq.get(indice);
+    }
+
+    /**
+     * Retourne la divergence nette de la séquence par rapport aux autres
+     * @return la divergence nette
+     */
+    public Float getdivergenceNette(){
+        return this.divergenceNette;
+    }
+
+    /**
+     * Modifie la divergence nette de la séquence par rapport aux autres
+     */
+    public void setdivergenceNette(Float divNette){
+        this.divergenceNette = divNette;
+    }
 
     /**
      * Renvoie l'en-tête de la séquence.
@@ -135,14 +170,6 @@ public class Sequence {
         this.typeSeq = typeSeq;
     }
 
-    /**
-     * Renvoie la séquence à l'indice donné.
-     * @param indice l'indice de la séquence à renvoyer.
-     * @return la séquence à l'indice donné.
-    */
-    public Sequence getSequenceAt(int indice) {
-        return this.listSeq.get(indice);
-    }
 
     /**
      * Retourne les infos pour chaque séquence de la liste.

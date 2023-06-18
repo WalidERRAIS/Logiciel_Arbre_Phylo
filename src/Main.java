@@ -1,9 +1,12 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import outils.AlgoPhenetique;
 import outils.Sequence;
 import outils.TypeSeq;
 import outils.AlgoPhenetique.Upgma;
+import outils.AlgoPhenetique.NJ;
+
 
 import interfaceGraphique.Menu;
 import javax.swing.UIManager;
@@ -23,8 +26,8 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 public class Main {
     public static void main(String[] args) throws Exception {
         UIManager.setLookAndFeel(new NimbusLookAndFeel());
-        Menu menu = new Menu();
-        menu.setVisible(true);
+        // Menu menu = new Menu();
+        // menu.setVisible(true);
         //initialise sequences
         // Sequence seq1 = new Sequence("seq1", "ATGC", TypeSeq.ADN);
         // Sequence seq2 = new Sequence("seq2", "TTGC", TypeSeq.ADN);
@@ -32,9 +35,6 @@ public class Main {
         // Sequence seq4 = new Sequence("seq4", "TACG", TypeSeq.ADN);
         // //initialise liste sequence
         // ArrayList<Sequence> listSeq = new ArrayList<Sequence>(List.of(seq1,seq2,seq3,seq4));
-        // //initialise matrice distance et liste noeud
-        // Float[][] matriceD = new Float[listSeq.size()][listSeq.size()];
-        // ArrayList<Node> listNoeud = new ArrayList<Node>();
         
         //test 2
         // Sequence seqA = new Sequence("seqA", "ATCGTGGTACTG", TypeSeq.ADN);
@@ -43,12 +43,20 @@ public class Main {
         // Sequence seqD = new Sequence("seqD", "ATGGTGAAAGTG", TypeSeq.ADN);
         // Sequence seqE = new Sequence("seqE", "CCGGAAAACTTG", TypeSeq.ADN);
         // Sequence seqF = new Sequence("seqF", "TGGCCCTGTATC", TypeSeq.ADN);
-
         // //initialise liste sequence
         // ArrayList<Sequence> listSeq2 = new ArrayList<Sequence>(List.of(seqA,seqB,seqC,seqD, seqE, seqF));
-        // //initialise matrice distance et liste noeud
-        // Float[][] matriceD2 = new Float[listSeq2.size()][listSeq2.size()];
-        // ArrayList<Node> listNoeud2 = new ArrayList<Node>();
+
+        //test 2 bis
+        Sequence seqA = new Sequence("seqA", "ATGCTACGATGCTACGATGCTACGATG", TypeSeq.ADN);
+        Sequence seqB = new Sequence("seqB", "TCGTCGGTCACGACGATTGCTACGATC", TypeSeq.ADN);
+        Sequence seqC = new Sequence("seqC", "TCCACGGACGCGACAGTACGATCGATG", TypeSeq.ADN);
+        Sequence seqD = new Sequence("seqD", "CACACGGTCACGACGATAATAGACTCC", TypeSeq.ADN);
+        //initialise liste sequence
+        ArrayList<Sequence> listSeq2 = new ArrayList<Sequence>(List.of(seqA,seqB,seqC,seqD));
+
+        
+        NJ.nj(listSeq2);
+        Upgma.upgma(listSeq2);
 
         //test 3
         // Sequence HIV_1_group_N = new Sequence("HIV_1_group_N", "-------------ATGGGAACAGAGCTTAAAGCCCTGTGTTAAATTAA-CCCCA----TTATGTGTAA-----CTATGCTTTGTAACAATAGCAATGGG-------AATAGTGCAGGGAATAGTACT------------ACCAATAGGA---C-AGAGGATCTAGAAGACAGACAAAT---------------------GAA-----AAATTGCTCATTCAATATAACCACTGAGATAAGAGATAGAAAGAAGCAAGTTTACTCTCTGTTTTATGTAGAAGATGTAGTGCCAATCAAAGATGGGACTGACAATAATACATATAG-GCTAATAAATTGTAATACCACAGCTGTGACACAAGCTTGTCCTAAGAC", TypeSeq.ADN);

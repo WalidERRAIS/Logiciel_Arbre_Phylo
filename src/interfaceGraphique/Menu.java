@@ -23,6 +23,7 @@ import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -49,6 +50,7 @@ import javax.swing.event.DocumentListener;
 import outils.Sequence;
 import outils.TypeAlgoTree;
 import outils.TypeSeq;
+import outils.AlgoPhenetique.Upgma;
 
 
 public class Menu extends JFrame {
@@ -199,13 +201,23 @@ public class Menu extends JFrame {
 	 */
 	private JInternalFrame createInternalFrameTree(){
 		internalFrameTree = new JInternalFrame("PHYLOGENY", false, true);
-		internalFrameTree.getContentPane().setLayout(new GridLayout(6,1));
+		internalFrameTree.getContentPane().setLayout(new GridLayout(9,1));
 		internalFrameTree.setVisible(true);
 
 		/*
 		 * Cadre step 1 pour la reconstruction d'arbres
 		 */
 		createLabelStepOneTree();
+
+		/*
+		 * label choix type sequence
+		 */
+		createLabelChoixTypeSequence(internalFrameTree);
+
+		/*
+		 * Choix type sequence
+		 */
+		createBoxChoixTypeSequence(internalFrameTree);
 
 		/*
 		 * label choix algo reconstruction arbres phylogénétiques
@@ -247,8 +259,16 @@ public class Menu extends JFrame {
 		 */
 		createBtnChoisirFichier(internalFrameTree);
 
+		/*
+		 * bouton qui lance la reconstruction d'arbre phylogénétique
+		 */
+		createBtnRunTree();
+
 		return internalFrameTree;
 	}
+	
+
+
 
 	/**
 	 * Affiche un cadre avec l'instruction de l'étape 1
@@ -309,7 +329,6 @@ public class Menu extends JFrame {
 	}
 
 
-	//Ajouter bouton choix type sequence !!!!!!!!!!!!!!!!!!
 	/**
 	 * Affiche un bouton qui au clic lance la reconstruction d'arbre phylogénétique
 	 */
@@ -345,7 +364,13 @@ public class Menu extends JFrame {
 							,(TypeSeq) choixTypeSequence.getSelectedItem());
 						query.setEnTeteAllSequence();
 						query.setAllSequences();
-						// print(query.printAllSequence());
+						//recupere la liste des séquences avec l'en-tête et la séquence modifié
+						ArrayList<Sequence> listSeq = query.getListSequence();
+						//reconstruit l'arbre selon l'algo choisi
+						if (choixTypeAlgoTree.getSelectedItem() == TypeAlgoTree.UPGMA){
+							Upgma.upgma(listSeq);
+						}
+
 					}	
 					else
 						throw new IllegalArgumentException();
@@ -378,12 +403,12 @@ public class Menu extends JFrame {
 		/*
 		 * label choix type sequence
 		 */
-		createLabelChoixTypeSequence();
+		createLabelChoixTypeSequence(internalFrame);
 
 		/*
 		 * Choix type de sequence
 		 */
-		createBoxChoixTypeSequence();
+		createBoxChoixTypeSequence(internalFrame);
 
 		/*
 		 * Cadre indication format de sequence
@@ -454,24 +479,24 @@ public class Menu extends JFrame {
 	/**
 	 * Affiche un cadre avec l'instruction choix du type de séquences
 	 */
-	private void createLabelChoixTypeSequence() {
+	private void createLabelChoixTypeSequence(JInternalFrame actualFrame) {
 		labelChoixTypeSequence = new JLabel("Sélectionner le type des séquences");
 		labelChoixTypeSequence.setFont(new Font("SansSerif", Font.PLAIN, 14));
 		panelLabelChoixTypeSequence = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panelLabelChoixTypeSequence.add(labelChoixTypeSequence);
-		internalFrame.getContentPane().add(panelLabelChoixTypeSequence);
+		actualFrame.getContentPane().add(panelLabelChoixTypeSequence);
 	}
 
 	/**
 	 * Affiche une liste pour choisir le type de séquences
 	 */
-	private void createBoxChoixTypeSequence() {
+	private void createBoxChoixTypeSequence(JInternalFrame actualFrame) {
 		TypeSeq[] typeSequence = new TypeSeq[]{TypeSeq.ADN,TypeSeq.PROTEINE,TypeSeq.ARN};
 		choixTypeSequence = new JComboBox(typeSequence);
 		choixTypeSequence.setPreferredSize(new Dimension(750, 50));
 		panelChoixTypeSequence = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		panelChoixTypeSequence.add(choixTypeSequence);
-		internalFrame.getContentPane().add(panelChoixTypeSequence);
+		actualFrame.getContentPane().add(panelChoixTypeSequence);
 		choixTypeSequence.addActionListener(new ActionListener() {
 			/**
 			 * Récupère l'item selectionné par l'utilisateur.
@@ -500,7 +525,7 @@ public class Menu extends JFrame {
 	/**
 	 * Affiche un champs pour y rentrer les séquences
 	 */
-	private void createTextAreaEntrezSeqScrollPane(JInternalFrame actialFrame) {
+	private void createTextAreaEntrezSeqScrollPane(JInternalFrame actualFrame) {
 		//le scroll pane permet de visualiser des composants plus grands en mettant des barres de defilement
 		scrollPane = new JScrollPane();
 		panelEntrezSequence = new JPanel(new BorderLayout());
@@ -509,7 +534,7 @@ public class Menu extends JFrame {
 		scrollPane.setViewportView(entrezSequence);
 		entrezSequence.setLineWrap(true);
 		entrezSequence.setEditable(true);
-		actialFrame.getContentPane().add(panelEntrezSequence, BorderLayout.CENTER);
+		actualFrame.getContentPane().add(panelEntrezSequence, BorderLayout.CENTER);
 		entrezSequence.getDocument().addDocumentListener(new DocumentListener() {
 			/**
 			 * Récupère les changements dans le champs saisi séquences.
