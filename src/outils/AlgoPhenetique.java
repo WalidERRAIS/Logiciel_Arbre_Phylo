@@ -37,7 +37,6 @@ public class AlgoPhenetique{
                 countDiff = 0.f;
             }
         }
-        System.out.println("methode ALgoPH");
         return matriceD;
     }
 
@@ -112,7 +111,6 @@ public class AlgoPhenetique{
                 //réinitialise le compteur de la divergence nette pour les prochaines séquences. 
                 countDivNette = 0.f;                
             }
-            System.out.println("methode NJ");
             return matriceD;
         }
     }
