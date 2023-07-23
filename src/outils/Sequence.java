@@ -12,7 +12,6 @@ public class Sequence {
     private String sequence;
     private TypeSeq typeSeq;
     private ArrayList<Sequence> listSeq = new ArrayList<Sequence>();
-    private Float divergenceNette; //divergence d'une séquence par rapport aux autres.
 
     
     /**
@@ -25,7 +24,6 @@ public class Sequence {
         this.enTete = enTete;
         this.sequence = sequence;
         this.typeSeq = typeSeq;
-        this.divergenceNette = null;
     }
 
     /**
@@ -105,21 +103,6 @@ public class Sequence {
     */
     public Sequence getSequenceAt(int indice) {
         return this.listSeq.get(indice);
-    }
-
-    /**
-     * Retourne la divergence nette de la séquence par rapport aux autres
-     * @return la divergence nette
-     */
-    public Float getdivergenceNette(){
-        return this.divergenceNette;
-    }
-
-    /**
-     * Modifie la divergence nette de la séquence par rapport aux autres
-     */
-    public void setdivergenceNette(Float divNette){
-        this.divergenceNette = divNette;
     }
 
     /**

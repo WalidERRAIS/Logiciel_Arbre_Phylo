@@ -330,7 +330,7 @@ public class Menu extends JFrame {
 
 
 	/**
-	 * Affiche un bouton qui au clic lance la reconstruction d'arbre phylogénétique
+	 * Créer un bouton qui au clic lance la reconstruction d'arbre phylogénétique
 	 */
 	private void createBtnRunTree() {
 		btnRunTree = new JButton("Construct Tree");

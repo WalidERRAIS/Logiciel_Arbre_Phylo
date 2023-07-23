@@ -10,6 +10,8 @@ public class Node{
     private Node enfant1;
     private Node enfant2;
     private Float longueurBranche;
+    private Float divergenceNette; //divergence d'une séquence par rapport aux autres.
+
 
     /**
      * Construit un noeud sans enfant. Correspond aux feuilles de l'arbre.
@@ -19,7 +21,6 @@ public class Node{
         this.sequence = sequence;
         this.enfant1 = null;
         this.enfant2 = null;
-        this.longueurBranche = 0.f;
     }
 
     /**
@@ -31,7 +32,21 @@ public class Node{
         this.enfant1 = n1;
         this.enfant2 = n2;
         this.sequence = null;
-        this.longueurBranche = null;
+    }
+
+    /**
+     * Retourne la divergence nette de la séquence par rapport aux autres
+     * @return la divergence nette
+     */
+    public Float getdivergenceNette(){
+        return this.divergenceNette;
+    }
+
+    /**
+     * Modifie la divergence nette de la séquence par rapport aux autres
+     */
+    public void setdivergenceNette(Float divNette){
+        this.divergenceNette = divNette;
     }
 
     /**

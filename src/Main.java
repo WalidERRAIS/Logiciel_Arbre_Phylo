@@ -14,18 +14,24 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 /*
  * To Do:
- * - finir createBtnRunTree
+ * - finir NJ
+ * - connecter NJ au bouton reconstruction
+ * - méthode poids moyen enracinement
+ * - alignement clustal omega
+ * - connecter alignement au bouton alignement
+ * - ajouter sauvegarde fichier alignement
+ * - ajouter sauvegarde resultat arbre
  * 
  * - remplacer par la suite mon calcul des distances (différences entre les séquences ) par la formule de la distance
  *  observée (S = M/L et D = 1 - S)
  * - d’appliquer une correction aux distances avec le modèle Jukes-Cantor
- * - méthode poids moyen enracinement
+ * 
  * - ajouter recuperation sequences en ligne
  * 
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        UIManager.setLookAndFeel(new NimbusLookAndFeel());
+        // UIManager.setLookAndFeel(new NimbusLookAndFeel());
         // Menu menu = new Menu();
         // menu.setVisible(true);
         //initialise sequences
@@ -56,7 +62,7 @@ public class Main {
 
         
         NJ.nj(listSeq2);
-        Upgma.upgma(listSeq2);
+        // Upgma.upgma(listSeq2);
 
         //test 3
         // Sequence HIV_1_group_N = new Sequence("HIV_1_group_N", "-------------ATGGGAACAGAGCTTAAAGCCCTGTGTTAAATTAA-CCCCA----TTATGTGTAA-----CTATGCTTTGTAACAATAGCAATGGG-------AATAGTGCAGGGAATAGTACT------------ACCAATAGGA---C-AGAGGATCTAGAAGACAGACAAAT---------------------GAA-----AAATTGCTCATTCAATATAACCACTGAGATAAGAGATAGAAAGAAGCAAGTTTACTCTCTGTTTTATGTAGAAGATGTAGTGCCAATCAAAGATGGGACTGACAATAATACATATAG-GCTAATAAATTGTAATACCACAGCTGTGACACAAGCTTGTCCTAAGAC", TypeSeq.ADN);
