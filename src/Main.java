@@ -43,26 +43,28 @@ public class Main {
         // ArrayList<Sequence> listSeq = new ArrayList<Sequence>(List.of(seq1,seq2,seq3,seq4));
         
         //test 2
-        // Sequence seqA = new Sequence("seqA", "ATCGTGGTACTG", TypeSeq.ADN);
-        // Sequence seqB = new Sequence("seqB", "CCGGAGAACTAG", TypeSeq.ADN);
-        // Sequence seqC = new Sequence("seqC", "AACGTGCTACTG", TypeSeq.ADN);
-        // Sequence seqD = new Sequence("seqD", "ATGGTGAAAGTG", TypeSeq.ADN);
-        // Sequence seqE = new Sequence("seqE", "CCGGAAAACTTG", TypeSeq.ADN);
-        // Sequence seqF = new Sequence("seqF", "TGGCCCTGTATC", TypeSeq.ADN);
-        // //initialise liste sequence
-        // ArrayList<Sequence> listSeq2 = new ArrayList<Sequence>(List.of(seqA,seqB,seqC,seqD, seqE, seqF));
+        Sequence seqA = new Sequence("seqA", "ATCGTGGTACTG", TypeSeq.ADN);
+        Sequence seqB = new Sequence("seqB", "CCGGAGAACTAG", TypeSeq.ADN);
+        Sequence seqC = new Sequence("seqC", "AACGTGCTACTG", TypeSeq.ADN);
+        Sequence seqD = new Sequence("seqD", "ATGGTGAAAGTG", TypeSeq.ADN);
+        Sequence seqE = new Sequence("seqE", "CCGGAAAACTTG", TypeSeq.ADN);
+        Sequence seqF = new Sequence("seqF", "TGGCCCTGTATC", TypeSeq.ADN);
+        //initialise liste sequence
+        ArrayList<Sequence> listSeq2 = new ArrayList<Sequence>(List.of(seqA,seqB,seqC,seqD, seqE, seqF));
 
         //test 2 bis
-        Sequence seqA = new Sequence("seqA", "ATGCTACGATGCTACGATGCTACGATG", TypeSeq.ADN);
-        Sequence seqB = new Sequence("seqB", "TCGTCGGTCACGACGATTGCTACGATC", TypeSeq.ADN);
-        Sequence seqC = new Sequence("seqC", "TCCACGGACGCGACAGTACGATCGATG", TypeSeq.ADN);
-        Sequence seqD = new Sequence("seqD", "CACACGGTCACGACGATAATAGACTCC", TypeSeq.ADN);
-        //initialise liste sequence
-        ArrayList<Sequence> listSeq2 = new ArrayList<Sequence>(List.of(seqA,seqB,seqC,seqD));
+        // Sequence seqA = new Sequence("seqA", "ATGCTACGATGCTACGATGCTACGATG", TypeSeq.ADN);
+        // Sequence seqB = new Sequence("seqB", "TCGTCGGTCACGACGATTGCTACGATC", TypeSeq.ADN);
+        // Sequence seqC = new Sequence("seqC", "TCCACGGACGCGACAGTACGATCGATG", TypeSeq.ADN);
+        // Sequence seqD = new Sequence("seqD", "CACACGGTCACGACGATAATAGACTCC", TypeSeq.ADN);
+        // //initialise liste sequence
+        // ArrayList<Sequence> listSeq2 = new ArrayList<Sequence>(List.of(seqA,seqB,seqC,seqD));
 
-        
+        System.out.println("NJ results :");
         NJ.nj(listSeq2);
-        // Upgma.upgma(listSeq2);
+        System.out.println("");
+        System.out.println("UPGMA results :");
+        Upgma.upgma(listSeq2);
 
         //test 3
         // Sequence HIV_1_group_N = new Sequence("HIV_1_group_N", "-------------ATGGGAACAGAGCTTAAAGCCCTGTGTTAAATTAA-CCCCA----TTATGTGTAA-----CTATGCTTTGTAACAATAGCAATGGG-------AATAGTGCAGGGAATAGTACT------------ACCAATAGGA---C-AGAGGATCTAGAAGACAGACAAAT---------------------GAA-----AAATTGCTCATTCAATATAACCACTGAGATAAGAGATAGAAAGAAGCAAGTTTACTCTCTGTTTTATGTAGAAGATGTAGTGCCAATCAAAGATGGGACTGACAATAATACATATAG-GCTAATAAATTGTAATACCACAGCTGTGACACAAGCTTGTCCTAAGAC", TypeSeq.ADN);

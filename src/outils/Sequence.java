@@ -166,6 +166,9 @@ public class Sequence {
         return infos;
     }
 
+    /**
+     * Affiche les séquences, l'enTete et le type.
+     */
     @Override
     public String toString() {
         return "Sequence [enTete=" + this.enTete + ", sequence=" + this.sequence + ", typeSeq=" + this.typeSeq + "]";

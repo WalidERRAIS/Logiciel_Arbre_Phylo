@@ -35,7 +35,7 @@ public class Node{
     }
 
     /**
-     * Retourne la divergence nette de la séquence par rapport aux autres
+     * Retourne la divergence nette du noeud par rapport aux autres
      * @return la divergence nette
      */
     public Float getdivergenceNette(){
@@ -43,7 +43,7 @@ public class Node{
     }
 
     /**
-     * Modifie la divergence nette de la séquence par rapport aux autres
+     * Modifie la divergence nette du noeud par rapport aux autres
      */
     public void setdivergenceNette(Float divNette){
         this.divergenceNette = divNette;
@@ -113,8 +113,11 @@ public class Node{
         this.longueurBranche = longueurBranche;
     }
 
+    /**
+     * Affiche le contenu d'un noeud.
+     */
     @Override
     public String toString() {
-        return "Node : \nenfant1=" + enfant1.sequence.toString() + "\nenfant2=" + enfant2.sequence.toString();
+        return "Node : \nenfant1=" + this.enfant1.sequence.toString() + "\nenfant2=" + this.enfant2.sequence.toString();
     }
 }
