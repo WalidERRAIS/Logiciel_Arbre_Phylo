@@ -285,35 +285,35 @@ public class AlgoPhenetique{
         public static void nj(ArrayList<Sequence> listSeq){
             Node lastNode=null;
             //initialise matrice distance et liste noeud
-            // matriceD = new Float[listSeq.size()][listSeq.size()];
+            matriceD = new Float[listSeq.size()][listSeq.size()];
             listNoeud = new ArrayList<Node>();
             initialiseListNode(listSeq);
-            // initialiseMatriceD();
-            matriceD= new Float[][]{
-                {0.0f, 5.0f, 4.0f, 7.0f, 6.0f, 8.0f},
-                {5.0f, 0.0f, 7.0f, 10.0f, 9.0f, 11.0f},
-                {4.0f, 7.0f, 0.0f, 7.0f, 6.0f, 8.0f},
-                {7.0f, 10.0f, 7.0f, 0.0f, 5.0f, 9.0f},
-                {6.0f, 9.0f, 6.0f, 5.0f, 0.0f, 8.0f},
-                {8.0f, 11.0f, 8.0f, 9.0f, 8.0f, 0.0f}
-            };
-            System.out.println("matrice distance");
-            affichageMatriceD(matriceD);
+            initialiseMatriceD();
+            // matriceD= new Float[][]{
+            //     {0.0f, 5.0f, 4.0f, 7.0f, 6.0f, 8.0f},
+            //     {5.0f, 0.0f, 7.0f, 10.0f, 9.0f, 11.0f},
+            //     {4.0f, 7.0f, 0.0f, 7.0f, 6.0f, 8.0f},
+            //     {7.0f, 10.0f, 7.0f, 0.0f, 5.0f, 9.0f},
+            //     {6.0f, 9.0f, 6.0f, 5.0f, 0.0f, 8.0f},
+            //     {8.0f, 11.0f, 8.0f, 9.0f, 8.0f, 0.0f}
+            // };
+            // System.out.println("matrice distance");
+            // affichageMatriceD(matriceD);
             while (listNoeud.size()>=2){
                 if (listNoeud.size()>2){
                     //calcul divergence nette des noeuds.
                     calculDivergenceNette();
 
-                    System.out.println("divergence nette : ");
-                    for (Node n : listNoeud){
-                        System.out.println(n.getdivergenceNette());
-                    }
-                    System.out.println("");
+                    // System.out.println("divergence nette : ");
+                    // for (Node n : listNoeud){
+                    //     System.out.println(n.getdivergenceNette());
+                    // }
+                    // System.out.println("");
 
                     //calcul distance modifie
                     calculMatriceModifie();
-                    System.out.println("matrice distance modifie");
-                    affichageMatriceD(matriceModifie);
+                    // System.out.println("matrice distance modifie");
+                    // affichageMatriceD(matriceModifie);
 
                     //copie la liste de noeud précédente pour le calcul de la nouvelle matrice de distances
                     listNoeudPreced = new ArrayList<Node>(listNoeud);
@@ -322,8 +322,8 @@ public class AlgoPhenetique{
                     minMatrice(matriceModifie);
                     //stocke valeur matrice distances des deux noeuds enfants pour le calcul de la branche
                     Float distEnfants = matriceD[indiceNoeud1][indiceNoeud2];
-                    System.out.println("distance enfants : ");
-                    System.out.println(distEnfants);
+                    // System.out.println("distance enfants : ");
+                    // System.out.println(distEnfants);
                     //créer un noeud parent avec les deux noeuds ayant la plus petite distance modifie
                     addCluster();
                     //retire les deux noeuds regroupés
@@ -337,8 +337,8 @@ public class AlgoPhenetique{
                     // System.out.println("longueur branche enfant 2 : "+listNoeud.get(listNoeud.size()-1).getEnfant2().getObjSequence().getEnTete()+" = "+listNoeud.get(listNoeud.size()-1).getEnfant2().getLongueurBranche());
                     //calcul nouvelle matrice distance noeud parent et les autres noeuds
                     reCalculMatriceD(TypeAlgoTree.Neighbor_Joining);
-                    System.out.println("matrice distance");
-                    affichageMatriceD(matriceD);
+                    // System.out.println("matrice distance");
+                    // affichageMatriceD(matriceD);
                 }
                 else{
                     // System.out.println("size : "+listNoeud.size());
@@ -358,7 +358,7 @@ public class AlgoPhenetique{
                 }
             }
             // printArbre(System.out);
-            System.out.print(Newick(lastNode, TypeAlgoTree.Neighbor_Joining));
+            System.out.print(Newick(lastNode, TypeAlgoTree.Neighbor_Joining)+"\n");
         }
 
         /**
@@ -371,9 +371,9 @@ public class AlgoPhenetique{
         public static void calculLongueurBrancheNJ(Float distEnfants, Float divEnfant1, Float divEnfant2){
             Float dEnfant1 = (distEnfants / 2) + (divEnfant1-divEnfant2) / 2;
             Float dEnfant2 = distEnfants - dEnfant1;
-            System.out.println("longueur enfant 1 : "+dEnfant1);
-            System.out.println("longueur enfant 2 : "+dEnfant2);
-            System.out.println("");
+            // System.out.println("longueur enfant 1 : "+dEnfant1);
+            // System.out.println("longueur enfant 2 : "+dEnfant2);
+            // System.out.println("");
             listNoeud.get(listNoeud.size()-1).getEnfant1().setLongueurBranche(dEnfant1);
             listNoeud.get(listNoeud.size()-1).getEnfant2().setLongueurBranche(dEnfant2);
         }
@@ -477,7 +477,7 @@ public class AlgoPhenetique{
                 }
             }
             // printArbre(System.out);
-            System.out.print(Newick(lastNode, TypeAlgoTree.UPGMA));
+            System.out.print(Newick(lastNode, TypeAlgoTree.UPGMA)+"\n");
         }
 
         /**
