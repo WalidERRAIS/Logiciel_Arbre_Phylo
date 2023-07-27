@@ -9,6 +9,8 @@ import outils.AlgoPhenetique.NJ;
 
 
 import interfaceGraphique.Menu;
+
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 

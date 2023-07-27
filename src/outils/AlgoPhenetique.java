@@ -2,6 +2,7 @@ package outils;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe externe contient les algos phenetique.
@@ -73,7 +74,7 @@ public class AlgoPhenetique{
      * @see removeCluster
      */
     public static Float minMatrice(Float[][] matrice){
-        Float min = 999999999999.f;
+        Float min = Float.MAX_VALUE;
         for (int i=0; i<matrice.length; i++){
             for (int j=0; j<matrice[i].length; j++){
                 if (matrice[i][j]!=0.f && matrice[i][j]<min){
@@ -116,14 +117,14 @@ public class AlgoPhenetique{
     public static String Newick(Node n, TypeAlgoTree algo) {
         if (n.getEnfant1()!=null && n.getEnfant2()!=null) {
             String output = "";
-            if (algo==TypeAlgoTree.UPGMA){
-                output += "(" + Newick(n.getEnfant1(), algo)+" : "+n.getLongueurBranche() + ", "
-                + Newick(n.getEnfant2(), algo) +" : "+n.getLongueurBranche() + ")";
-            }
-            else{
+            // if (algo==TypeAlgoTree.UPGMA){
+            //     output += "(" + Newick(n.getEnfant1(), algo)+" : "+n.getLongueurBranche() + ", "
+            //     + Newick(n.getEnfant2(), algo) +" : "+n.getLongueurBranche() + ")";
+            // }
+            // else{
                 output += "(" + Newick(n.getEnfant1(), algo)+" : "+n.getEnfant1().getLongueurBranche() + ", "
                 + Newick(n.getEnfant2(), algo) +" : "+n.getEnfant2().getLongueurBranche() + ")";
-            }
+            // }
             return output.replace("\n", ""); //supprime les retours à la ligne
         } else {
             return n.getObjSequence().getEnTete();
@@ -269,6 +270,60 @@ public class AlgoPhenetique{
         return matriceD;
     }
 
+    public static void enracinerArbre(Node rootNode) {
+        // Trouver les deux feuilles les plus éloignées dans l'arbre
+        Node[] feuillesPlusEloignees = trouverFeuillesPlusEloignees(rootNode);
+        System.out.println(feuillesPlusEloignees[0].getObjSequence().toString());
+        System.out.println(feuillesPlusEloignees[1].getObjSequence().toString());
+
+
+        // // Créer un nouveau nœud qui sera la racine de l'arbre enraciné
+        // Node nouvelleRacine = new Node(feuillesPlusEloignees[0], feuillesPlusEloignees[1]);
+        
+        // // Calculer la longueur de la branche de la nouvelle racine aux feuilles les plus éloignées
+        // Float distanceRacineA = feuillesPlusEloignees[0].getLongueurBranche();
+        // Float distanceRacineC = feuillesPlusEloignees[1].getLongueurBranche();
+        // nouvelleRacine.setLongueurBranche((distanceRacineA + distanceRacineC) / 2.0f);
+        
+        // // Mettre à jour les longueurs de branche des feuilles les plus éloignées
+        // feuillesPlusEloignees[0].setLongueurBranche(feuillesPlusEloignees[0].getLongueurBranche() - nouvelleRacine.getLongueurBranche());
+        // feuillesPlusEloignees[1].setLongueurBranche(feuillesPlusEloignees[1].getLongueurBranche() - nouvelleRacine.getLongueurBranche());
+        
+        // // Mettre à jour le parent des feuilles les plus éloignées
+        // feuillesPlusEloignees[0].setParent(nouvelleRacine);
+        // feuillesPlusEloignees[1].setParent(nouvelleRacine);
+        
+        // // Mettre à jour la racine de l'arbre enraciné
+        // rootNode.setParent(nouvelleRacine);
+    }
+    
+    private static Node[] trouverFeuillesPlusEloignees(Node node) {
+        Float maxDistance = Float.MIN_VALUE;
+        Node[] feuillesPlusEloignees = new Node[2];
+    
+        // Parcours récursif de l'arbre pour trouver les feuilles les plus éloignées
+        List<Node> feuilles = node.getFeuilles();
+        int nbFeuilles = feuilles.size();
+        for (int i = 0; i < nbFeuilles - 1; i++) {
+            Node feuille1 = feuilles.get(i);
+            for (int j = i + 1; j < nbFeuilles; j++) {
+                Node feuille2 = feuilles.get(j);
+                // System.out.println(feuille1.getObjSequence().toString());
+                // System.out.println(feuille2.getObjSequence().toString());
+                float distance = feuille1.getDistanceToNode(feuille2);
+                // System.out.println(distance);
+                if (distance > maxDistance) {
+                    maxDistance = distance;
+                    feuillesPlusEloignees[0] = feuille1;
+                    feuillesPlusEloignees[1] = feuille2;
+                }
+            }
+        }
+        System.out.println("max dist : "+maxDistance);
+        return feuillesPlusEloignees;
+    }
+    
+
     //-----------------------------Neighbor Joining-----------------------------------------
     /**
      * Classe interne UPGMA construit un arbre phylogénétique avec l'algorithme Neighbor Joining.
@@ -357,8 +412,9 @@ public class AlgoPhenetique{
 
                 }
             }
+            enracinerArbre(lastNode);
             // printArbre(System.out);
-            System.out.print(Newick(lastNode, TypeAlgoTree.Neighbor_Joining)+"\n");
+            // System.out.print(Newick(lastNode, TypeAlgoTree.Neighbor_Joining)+"\n");
         }
 
         /**
@@ -455,9 +511,10 @@ public class AlgoPhenetique{
                     //retire les deux noeuds regroupés
                     removeNode();
 
-                    //hauteur noeud parent égale moyenne des distances des deux enfants
-                    listNoeud.get(listNoeud.size()-1).setLongueurBranche(calculLongueurBranche(min));
-
+                    //calcul longueur branche noeud parent avec ses enfants
+                    calculLongueurBranche(min);
+                    // System.out.println(listNoeud.get(listNoeud.size()-1).getEnfant1().getLongueurBranche());
+                    // System.out.println(listNoeud.get(listNoeud.size()-1).getEnfant2().getLongueurBranche());
                     reCalculMatriceD(TypeAlgoTree.UPGMA);
 
                     // affichageMatriceD(matriceD);
@@ -473,11 +530,15 @@ public class AlgoPhenetique{
                     removeNode();
                     // System.out.println("size : "+listNoeud.size());
                     //hauteur noeud parent égale moyenne des distances des deux enfants
-                    lastNode.setLongueurBranche(calculLongueurBranche(min));
+                    // lastNode.setLongueurBranche(calculLongueurBranche(min));
+                    calculLongueurBranche(min, lastNode);
+                    // System.out.println(listNoeud.get(listNoeud.size()-1).getEnfant1().getLongueurBranche());
+                    // System.out.println(listNoeud.get(listNoeud.size()-1).getEnfant2().getLongueurBranche());
                 }
             }
+            enracinerArbre(lastNode);
             // printArbre(System.out);
-            System.out.print(Newick(lastNode, TypeAlgoTree.UPGMA)+"\n");
+            // System.out.print(Newick(lastNode, TypeAlgoTree.UPGMA)+"\n");
         }
 
         /**
@@ -485,8 +546,20 @@ public class AlgoPhenetique{
          * @param distance la distance entre les deux enfants.
          * @return la longueur de la branche du noeud. 
          */
-        public static Float calculLongueurBranche(Float distance){
-            return 0.5f*distance;
+        public static void calculLongueurBranche(Float distance){
+            listNoeud.get(listNoeud.size()-1).getEnfant1().setLongueurBranche(0.5f*distance);
+            listNoeud.get(listNoeud.size()-1).getEnfant2().setLongueurBranche(0.5f*distance);
+        }
+
+        /**
+         * Calcul la longueur de la branche du dernier noeud en faisant la moyenne des distances des deux enfants.
+         * @param distance la distance entre les deux enfants.
+         * @param last dernier noeud formé
+         * @return la longueur de la branche du noeud. 
+         */
+        public static void calculLongueurBranche(Float distance, Node last){
+            last.getEnfant1().setLongueurBranche(0.5f*distance);
+            last.getEnfant2().setLongueurBranche(0.5f*distance);
         }
 
         /**
