@@ -12,6 +12,7 @@ public class Sequence {
     private String sequence;
     private TypeSeq typeSeq;
     private ArrayList<Sequence> listSeq = new ArrayList<Sequence>();
+    private int lengthSeq;
 
     
     /**
@@ -24,6 +25,7 @@ public class Sequence {
         this.enTete = enTete;
         this.sequence = sequence;
         this.typeSeq = typeSeq;
+        this.lengthSeq = sequence.length();
     }
 
     /**
@@ -87,6 +89,22 @@ public class Sequence {
 			}
 		}
 	}
+
+    /**
+     * Renvoie la longueur de la séquence.
+     * @return length longueur de la séquence.
+     */
+    public int getLengthSeq(){
+        return this.lengthSeq;
+    }
+
+    /**
+     * Modifie la longueur de la séquence.
+     * @param length longueur de la séquence.
+     */
+    public void setLengthSeq(int length){
+        this.lengthSeq = length;
+    }
 
     /**
      * Renvoie la liste de séquences

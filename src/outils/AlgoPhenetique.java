@@ -37,20 +37,39 @@ public class AlgoPhenetique{
     */
     public static void initialiseMatriceD() {
         //Initialisation compteur de distance
-        Float countDiff = 0.f;
+        Float distObs = 0.f;
         //i correspond à la première séquence de la comparaison
         for (int i=0; i<listNoeud.size(); i++){
             //k correspond à la deuxième séquence de la comparaison
             for (int k=0; k<listNoeud.size(); k++){
                 //j correspond à la position des éléments comparés
-                for (int j=0; j<listNoeud.get(i).getObjSequence().getSequence().length(); j++){
-                    if (listNoeud.get(i).getObjSequence().getSequence().charAt(j)!=listNoeud.get(k).getObjSequence().getSequence().charAt(j))
-                        countDiff++;
+                for (int j=0; j<listNoeud.get(i).getObjSequence().getLengthSeq(); j++){
+                    if (listNoeud.get(i).getObjSequence().getSequence().charAt(j)==listNoeud.get(k).getObjSequence().getSequence().charAt(j))
+                        distObs++;
                 }
+                distObs = distObs/listNoeud.get(i).getObjSequence().getLengthSeq();
                 //affecte la distance entre les séquences i et k
-                matriceD[i][k] = countDiff;                
+                matriceD[i][k] = 1.0f-distObs;                
                 //réinitialise le compteur pour les prochaines séquences à comparer
-                countDiff = 0.f;
+                distObs = 0.f;
+            }
+        }
+    }
+
+    /**
+     * Applique une correction des distances observées en utilisant le modèle évolutive de Jukes-Cantor.
+     */
+    public static void correctionDistObs(){
+        for (int i=0; i<matriceD.length; i++){
+            for (int j=0; j<matriceD[i].length; j++){
+                //fixe les distances observées supérieurs à 0.75 à 0.749999 pour éviter des erreurs de calcul
+                if (matriceD[i][j]>=0.75f){
+                    matriceD[i][j] = 0.749999f;
+                }
+                if (matriceD[i][j]>0.0f && matriceD[i][j]<0.75f){
+                    //applique correction au distance observée avec le modele Jukes-Cantor
+                    matriceD[i][j] = (float) (-3.0f / 4.0f * Math.log(1.0f - 4.0f / 3.0f * matriceD[i][j]));
+                }
             }
         }
     }
@@ -114,17 +133,11 @@ public class AlgoPhenetique{
      * @param n noeud de départ.
      * @return l'arbre au format Newick
      */
-    public static String Newick(Node n, TypeAlgoTree algo) {
+    public static String Newick(Node n) {
         if (n.getEnfant1()!=null && n.getEnfant2()!=null) {
             String output = "";
-            // if (algo==TypeAlgoTree.UPGMA){
-            //     output += "(" + Newick(n.getEnfant1(), algo)+" : "+n.getLongueurBranche() + ", "
-            //     + Newick(n.getEnfant2(), algo) +" : "+n.getLongueurBranche() + ")";
-            // }
-            // else{
-                output += "(" + Newick(n.getEnfant1(), algo)+" : "+n.getEnfant1().getLongueurBranche() + ", "
-                + Newick(n.getEnfant2(), algo) +" : "+n.getEnfant2().getLongueurBranche() + ")";
-            // }
+            output += "(" + Newick(n.getEnfant1())+":"+n.getEnfant1().getLongueurBranche() + ","
+            + Newick(n.getEnfant2()) +":"+n.getEnfant2().getLongueurBranche() + ")";
             return output.replace("\n", ""); //supprime les retours à la ligne
         } else {
             return n.getObjSequence().getEnTete();
@@ -140,7 +153,7 @@ public class AlgoPhenetique{
      * @param algo type d'algo utilisé.
      * @return la nouvelle matrice calculée.
      */
-    public static Float[][] reCalculMatriceD(TypeAlgoTree algo) {
+    public static void reCalculMatriceD(TypeAlgoTree algo) {
         //copie la précédente matrice de distances.
         Float[][] oldMatriceD = new Float[matriceD.length][];
         for (int i = 0; i < matriceD.length; i++) {
@@ -267,23 +280,22 @@ public class AlgoPhenetique{
                 }
             }
         }
-        return matriceD;
     }
 
-    public static void enracinerArbre(Node rootNode) {
+    public static void enracinerArbre(Node last) {
         // Trouver les deux feuilles les plus éloignées dans l'arbre
-        Node[] feuillesPlusEloignees = trouverFeuillesPlusEloignees(rootNode);
+        Node[] feuillesPlusEloignees = trouverFeuillesPlusEloignees(last);
         System.out.println(feuillesPlusEloignees[0].getObjSequence().toString());
         System.out.println(feuillesPlusEloignees[1].getObjSequence().toString());
 
 
         // // Créer un nouveau nœud qui sera la racine de l'arbre enraciné
-        // Node nouvelleRacine = new Node(feuillesPlusEloignees[0], feuillesPlusEloignees[1]);
+        // racine = new Node(feuillesPlusEloignees[0], feuillesPlusEloignees[1]);
         
         // // Calculer la longueur de la branche de la nouvelle racine aux feuilles les plus éloignées
         // Float distanceRacineA = feuillesPlusEloignees[0].getLongueurBranche();
         // Float distanceRacineC = feuillesPlusEloignees[1].getLongueurBranche();
-        // nouvelleRacine.setLongueurBranche((distanceRacineA + distanceRacineC) / 2.0f);
+        // racine.setLongueurBranche((distanceRacineA + distanceRacineC) / 2.0f);
         
         // // Mettre à jour les longueurs de branche des feuilles les plus éloignées
         // feuillesPlusEloignees[0].setLongueurBranche(feuillesPlusEloignees[0].getLongueurBranche() - nouvelleRacine.getLongueurBranche());
@@ -294,8 +306,71 @@ public class AlgoPhenetique{
         // feuillesPlusEloignees[1].setParent(nouvelleRacine);
         
         // // Mettre à jour la racine de l'arbre enraciné
-        // rootNode.setParent(nouvelleRacine);
+        // lastNode.setParent(nouvelleRacine);
     }
+
+    //vers 2
+    // public static void enracinerArbre(Node last) {
+    //     // Trouver les deux feuilles les plus éloignées dans l'arbre
+    //     Node[] feuillesPlusEloignees = trouverFeuillesPlusEloignees(last);
+    //     System.out.println(feuillesPlusEloignees[0].getObjSequence().toString());
+    //     System.out.println(feuillesPlusEloignees[1].getObjSequence().toString());
+    
+    //     // Calculer la distance moyenne entre les deux feuilles (8.75 dans votre cas)
+    //     float distanceMoyenne = 8.75f;
+    
+    //     // Identifier le nœud dont la somme des longueurs de branche jusqu'aux deux feuilles est inférieure ou égale à la distanceMoyenne
+    //     Node noeudRacine = trouverNoeudRacine(feuillesPlusEloignees[0], feuillesPlusEloignees[1], distanceMoyenne);
+    
+    //     if (noeudRacine != null) {
+    //         // Calculer la longueur de branche pour le nouveau nœud racine
+    //         float sommeLongueursFeuilles = feuillesPlusEloignees[0].getDistanceToNode(noeudRacine) + feuillesPlusEloignees[1].getDistanceToNode(noeudRacine);
+    //         float longueurBrancheNouvelleRacine = distanceMoyenne - sommeLongueursFeuilles;
+    
+    //         // Créer un nouveau nœud qui sera la racine de l'arbre enraciné
+    //         racine = new Node(null, null); // Création d'un nœud vide (la racine n'a pas de séquence)
+    
+    //         // Relier le nouveau nœud racine à l'ancien nœud parent avec la longueur de branche appropriée
+    //         noeudRacine.setParent(racine);
+    //         noeudRacine.setLongueurBranche(longueurBrancheNouvelleRacine);
+    
+    //         // Relier les feuilles les plus éloignées à la nouvelle racine avec une longueur de branche de distanceMoyenne
+    //         feuillesPlusEloignees[0].setParent(racine);
+    //         feuillesPlusEloignees[0].setLongueurBranche(distanceMoyenne);
+    //         feuillesPlusEloignees[1].setParent(racine);
+    //         feuillesPlusEloignees[1].setLongueurBranche(distanceMoyenne);
+    //     } else {
+    //         System.out.println("Impossible de trouver un nœud approprié pour l'enracinement.");
+    //     }
+    // }
+    
+    // // Fonction pour trouver le nœud dont la somme des longueurs de branche jusqu'aux deux feuilles est inférieure ou égale à la distanceMoyenne
+    // private static Node trouverNoeudRacine(Node feuille1, Node feuille2, float distanceMoyenne) {
+    //     // Liste des parents visités pour chaque feuille
+    //     ArrayList<Node> parentsFeuille1 = new ArrayList<>();
+    //     ArrayList<Node> parentsFeuille2 = new ArrayList<>();
+    
+    //     // Recherche du premier ancêtre commun en partant de feuille1
+    //     Node ancetreCommun = feuille1;
+    //     while (ancetreCommun != null) {
+    //         parentsFeuille1.add(ancetreCommun);
+    //         ancetreCommun = ancetreCommun.getParent();
+    //     }
+    
+    //     // Recherche du premier ancêtre commun en partant de feuille2
+    //     ancetreCommun = feuille2;
+    //     while (ancetreCommun != null) {
+    //         parentsFeuille2.add(ancetreCommun);
+    //         if (parentsFeuille1.contains(ancetreCommun)) {
+    //             return ancetreCommun; // On a trouvé le premier ancêtre commun
+    //         }
+    //         ancetreCommun = ancetreCommun.getParent();
+    //     }
+    
+    //     return null; // Aucun ancêtre commun trouvé
+    // }
+    
+
     
     private static Node[] trouverFeuillesPlusEloignees(Node node) {
         Float maxDistance = Float.MIN_VALUE;
@@ -337,13 +412,14 @@ public class AlgoPhenetique{
          * jusqu'à se qu'il ne reste plus qu'un noeud dans la liste.
          * @param listSeq
          */
-        public static void nj(ArrayList<Sequence> listSeq){
+        public static String nj(ArrayList<Sequence> listSeq){
             Node lastNode=null;
             //initialise matrice distance et liste noeud
             matriceD = new Float[listSeq.size()][listSeq.size()];
             listNoeud = new ArrayList<Node>();
             initialiseListNode(listSeq);
             initialiseMatriceD();
+            correctionDistObs();
             // matriceD= new Float[][]{
             //     {0.0f, 5.0f, 4.0f, 7.0f, 6.0f, 8.0f},
             //     {5.0f, 0.0f, 7.0f, 10.0f, 9.0f, 11.0f},
@@ -358,18 +434,15 @@ public class AlgoPhenetique{
                 if (listNoeud.size()>2){
                     //calcul divergence nette des noeuds.
                     calculDivergenceNette();
-
                     // System.out.println("divergence nette : ");
                     // for (Node n : listNoeud){
                     //     System.out.println(n.getdivergenceNette());
                     // }
                     // System.out.println("");
-
                     //calcul distance modifie
                     calculMatriceModifie();
                     // System.out.println("matrice distance modifie");
                     // affichageMatriceD(matriceModifie);
-
                     //copie la liste de noeud précédente pour le calcul de la nouvelle matrice de distances
                     listNoeudPreced = new ArrayList<Node>(listNoeud);
                     //choisir distance modifie minimale 
@@ -386,10 +459,6 @@ public class AlgoPhenetique{
                     //calcul longueur branche noeud parent avec ses enfants
                     // System.out.println(listNoeud.get(listNoeud.size()-1).toString());
                     calculLongueurBrancheNJ(distEnfants,listNoeud.get(listNoeud.size()-1).getEnfant1().getdivergenceNette(),listNoeud.get(listNoeud.size()-1).getEnfant2().getdivergenceNette());
-
-                    // System.out.println("longueur branche enfant 1 : "+listNoeud.get(listNoeud.size()-1).getEnfant1().getObjSequence().getEnTete()+" = "+listNoeud.get(listNoeud.size()-1).getEnfant1().getLongueurBranche());
-
-                    // System.out.println("longueur branche enfant 2 : "+listNoeud.get(listNoeud.size()-1).getEnfant2().getObjSequence().getEnTete()+" = "+listNoeud.get(listNoeud.size()-1).getEnfant2().getLongueurBranche());
                     //calcul nouvelle matrice distance noeud parent et les autres noeuds
                     reCalculMatriceD(TypeAlgoTree.Neighbor_Joining);
                     // System.out.println("matrice distance");
@@ -412,9 +481,10 @@ public class AlgoPhenetique{
 
                 }
             }
-            enracinerArbre(lastNode);
+            // enracinerArbre(lastNode);
             // printArbre(System.out);
-            // System.out.print(Newick(lastNode, TypeAlgoTree.Neighbor_Joining)+"\n");
+            System.out.print(Newick(lastNode)+"\n");
+            return Newick(lastNode);
         }
 
         /**
@@ -425,11 +495,11 @@ public class AlgoPhenetique{
          * @param divEnfant2 divergence nette de l'enfant 2.
          */
         public static void calculLongueurBrancheNJ(Float distEnfants, Float divEnfant1, Float divEnfant2){
-            Float dEnfant1 = (distEnfants / 2) + (divEnfant1-divEnfant2) / 2;
-            Float dEnfant2 = distEnfants - dEnfant1;
+            Float dEnfant1 = (distEnfants / 2) + Math.abs(divEnfant1-divEnfant2) / 2;
+            Float dEnfant2 = Math.abs(distEnfants - dEnfant1);
             // System.out.println("longueur enfant 1 : "+dEnfant1);
             // System.out.println("longueur enfant 2 : "+dEnfant2);
-            // System.out.println("");
+            System.out.println("");
             listNoeud.get(listNoeud.size()-1).getEnfant1().setLongueurBranche(dEnfant1);
             listNoeud.get(listNoeud.size()-1).getEnfant2().setLongueurBranche(dEnfant2);
         }
@@ -488,35 +558,31 @@ public class AlgoPhenetique{
          * jusqu'à se qu'il ne reste plus qu'un noeud dans la liste.
          * @param listSeq
          */
-        public static void upgma(ArrayList<Sequence> listSeq){
+        public static String upgma(ArrayList<Sequence> listSeq){
             Node lastNode=null;
             //initialise matrice distance et liste noeud
             matriceD = new Float[listSeq.size()][listSeq.size()];
             listNoeud = new ArrayList<Node>();
             initialiseListNode(listSeq);
             initialiseMatriceD();
-
+            correctionDistObs();
             // affichageMatriceD(matriceD);
             // System.out.println("");
-
             Float min = 0.f;
             while (listNoeud.size()>=2){
                 if (listNoeud.size()>2){
                     //copie la liste de noeud précédente pour le calcul de la nouvelle matrice de distances
                     listNoeudPreced = new ArrayList<Node>(listNoeud);
                     min = minMatrice(matriceD);
-
                     //créer un noeud parent avec les deux noeuds les plus proches
                     addCluster();
                     //retire les deux noeuds regroupés
                     removeNode();
-
                     //calcul longueur branche noeud parent avec ses enfants
                     calculLongueurBranche(min);
                     // System.out.println(listNoeud.get(listNoeud.size()-1).getEnfant1().getLongueurBranche());
                     // System.out.println(listNoeud.get(listNoeud.size()-1).getEnfant2().getLongueurBranche());
                     reCalculMatriceD(TypeAlgoTree.UPGMA);
-
                     // affichageMatriceD(matriceD);
                     // System.out.println("");
                 }
@@ -536,9 +602,10 @@ public class AlgoPhenetique{
                     // System.out.println(listNoeud.get(listNoeud.size()-1).getEnfant2().getLongueurBranche());
                 }
             }
-            enracinerArbre(lastNode);
+            // enracinerArbre(lastNode);
             // printArbre(System.out);
-            // System.out.print(Newick(lastNode, TypeAlgoTree.UPGMA)+"\n");
+            System.out.print(Newick(lastNode)+"\n");
+            return Newick(lastNode);
         }
 
         /**
@@ -547,8 +614,11 @@ public class AlgoPhenetique{
          * @return la longueur de la branche du noeud. 
          */
         public static void calculLongueurBranche(Float distance){
+            while(listNoeud.get(listNoeud.size()-1).getEnfant1()!=null){
+                
             listNoeud.get(listNoeud.size()-1).getEnfant1().setLongueurBranche(0.5f*distance);
             listNoeud.get(listNoeud.size()-1).getEnfant2().setLongueurBranche(0.5f*distance);
+            }
         }
 
         /**

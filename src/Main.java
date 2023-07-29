@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +19,6 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 /*
  * To Do:
- * - finir NJ
  * - connecter NJ au bouton reconstruction
  * - méthode poids moyen enracinement
  * - alignement clustal omega
@@ -44,7 +46,7 @@ public class Main {
         // //initialise liste sequence
         // ArrayList<Sequence> listSeq = new ArrayList<Sequence>(List.of(seq1,seq2,seq3,seq4));
         
-        //test 2
+        // test 2
         Sequence seqA = new Sequence("seqA", "ATCGTGGTACTG", TypeSeq.ADN);
         Sequence seqB = new Sequence("seqB", "CCGGAGAACTAG", TypeSeq.ADN);
         Sequence seqC = new Sequence("seqC", "AACGTGCTACTG", TypeSeq.ADN);
@@ -63,12 +65,12 @@ public class Main {
         // ArrayList<Sequence> listSeq2 = new ArrayList<Sequence>(List.of(seqA,seqB,seqC,seqD));
 
         System.out.println("NJ results :");
-        NJ.nj(listSeq2);
+        String resNJ = NJ.nj(listSeq2);
         System.out.println("");
         System.out.println("UPGMA results :");
-        Upgma.upgma(listSeq2);
+        String resUpgma = Upgma.upgma(listSeq2);
 
-        //test 3
+        // //test 3
         // Sequence HIV_1_group_N = new Sequence("HIV_1_group_N", "-------------ATGGGAACAGAGCTTAAAGCCCTGTGTTAAATTAA-CCCCA----TTATGTGTAA-----CTATGCTTTGTAACAATAGCAATGGG-------AATAGTGCAGGGAATAGTACT------------ACCAATAGGA---C-AGAGGATCTAGAAGACAGACAAAT---------------------GAA-----AAATTGCTCATTCAATATAACCACTGAGATAAGAGATAGAAAGAAGCAAGTTTACTCTCTGTTTTATGTAGAAGATGTAGTGCCAATCAAAGATGGGACTGACAATAATACATATAG-GCTAATAAATTGTAATACCACAGCTGTGACACAAGCTTGTCCTAAGAC", TypeSeq.ADN);
         // Sequence HIV_1_group_O = new Sequence("HIV_1_group_O", "---GGTAGAACAAATGCAGGAAGACATTATTAGCTTATGGGAACAGAG-CTTCAAACCTTGTGTGCAA-----ATGACTTTTCTGTGTGTACAAATGA--------ATTGTCACATTGTAGAAGAA-------------ACCAACAGCT---C-A------TCAGCAGAGAAACCTTT---------------------ACA-----A---TGTGAGTTTAATGTAACCACTGTTGTCAAGGACAAAAAAGAGAAAAAACAGGCTCTATTTTATAGATCAGATTTAATGAAATT---AGATGAAACAAACGAAACAATGTATAC-ATTAATTAATTGTAACTCCACAACCATTAAGCAAGCCTGTCCAAAGAT", TypeSeq.ADN);
         // Sequence HIV_1_subtype_A = new Sequence("HIV_1_subtype_A", "------AGAGCAGATGCATACAGATATAATCAGTCTATGGGATCAGAG-CCTAAAGCCATGTGTAGAA-----TTAACCCCTCTCTGCGTTACTTTAGATTGTCTAAACGCCACCCTCAATGCCACC------------GCCCCCAATG---T-CACCAATGACATGGAAGGAGAAAT---------------------GAA-----AAACTGCTCTTACAATATAACCACAGAATTAAAGGATAAGAAACAGCAAGTGTATTCACTTTTTTATAAGCTTGATGTAGTACAAATTAATGAAAAGAATAAAACAAACAAGTATAG-ATTAATAAATTGTAATACCTCAGCCATTAC------------------", TypeSeq.ADN);
@@ -82,7 +84,34 @@ public class Main {
 
         // //initialise liste sequence
         // ArrayList<Sequence> listSeq3 = new ArrayList<Sequence>(List.of(HIV_1_group_N, HIV_1_group_O, HIV_1_subtype_A, HIV_1_subtype_B, HIV_1_subtype_C, HIV_1_subtype_D, HIV_2_subtype_A, HIV_2_subtype_B, SIV_chpz, SIV_mac));
-        // Upgma.upgma(listSeq3);
+        // System.out.println("NJ results :");
+        // String resNJ3 = NJ.nj(listSeq3);
+        // System.out.println("");
+
+        // System.out.println("UPGMA results :");
+        // String resUpgma3 = Upgma.upgma(listSeq3);
+
+        
+        try {
+            ProcessBuilder builder = new ProcessBuilder("python",
+             "C:\\Users\\SENNAOUI\\Desktop\\Logiciel_Arbre_Phylo\\src\\interfaceGraphique\\DrawTree.py",
+              resNJ, resUpgma);
+            builder.start();
+
+            // BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            // BufferedReader readers = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            // String lines=null;
+            // while ((lines=reader.readLine())!=null){
+            //     System.out.println(lines);
+            // }
+            // while ((lines=readers.readLine())!=null){
+            //     System.out.println("error lines"+lines);
+            // }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 

@@ -115,14 +115,6 @@ public class Node{
         return -1;
     }
     
-    
-    
-
-    
-    
-    
-    
-    
     public boolean estFeuille() {
         return (this.getEnfant1() == null && this.getEnfant2() == null);
     }
