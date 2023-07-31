@@ -94,25 +94,23 @@ public class Main {
         
         try {
             ProcessBuilder builder = new ProcessBuilder("python",
-             "C:\\Users\\SENNAOUI\\Desktop\\Logiciel_Arbre_Phylo\\src\\interfaceGraphique\\DrawTree.py",
+             "src\\interfaceGraphique\\DrawTree.py",
               resNJ, resUpgma);
-            builder.start();
+            Process process = builder.start();
 
-            // BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            // BufferedReader readers = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader readers = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
-            // String lines=null;
-            // while ((lines=reader.readLine())!=null){
-            //     System.out.println(lines);
-            // }
-            // while ((lines=readers.readLine())!=null){
-            //     System.out.println("error lines"+lines);
-            // }
+            String lines=null;
+            while ((lines=reader.readLine())!=null){
+                System.out.println(lines);
+            }
+            while ((lines=readers.readLine())!=null){
+                System.out.println("error lines"+lines);
+            }
         }
         catch (Exception e){
             e.printStackTrace();
         }
-
     }
-
 }

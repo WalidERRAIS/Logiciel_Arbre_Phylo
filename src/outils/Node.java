@@ -1,7 +1,6 @@
 package outils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 /**
  * La classe Node permet de créer des noeuds. Un noeud est soit un objet Sequence
@@ -26,6 +25,7 @@ public class Node{
         this.enfant1 = null;
         this.enfant2 = null;
         this.parent = null;
+        this.longueurBranche = 0.0f;
     }
 
     /**
@@ -37,6 +37,7 @@ public class Node{
         this.enfant1 = n1;
         this.enfant2 = n2;
         this.sequence = null;
+        this.longueurBranche = 0.0f;
         //enregistrer le nouveau cluster comme parent des deux enfants
         n1.setParent(this);
         n2.setParent(this);

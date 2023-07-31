@@ -129,7 +129,7 @@ public class AlgoPhenetique{
 
 
     /**
-     * Retourne une chaîne de caractère au format Newick de l'arbre en partant de la racine.
+     * Retourne une chaîne de caractère au format Newick de l'arbre en partant du noeud le plus basal.
      * @param n noeud de départ.
      * @return l'arbre au format Newick
      */
@@ -195,7 +195,7 @@ public class AlgoPhenetique{
                 else if (listNoeud.get(i).getObjSequence()==null && listNoeud.get(k).getObjSequence()!=null){
                     indiceK = listNoeudPreced.indexOf(listNoeud.get(k));
                     //seulement i à des enfants et il est le dernier cluster formé 
-                    if (listNoeud.get(listNoeud.size()-1)==listNoeud.get(i)){
+                    if (getLastNode()==listNoeud.get(i)){
                         indiceIEnfant1 = listNoeudPreced.indexOf(listNoeud.get(i).getEnfant1());
                         indiceIEnfant2 = listNoeudPreced.indexOf(listNoeud.get(i).getEnfant2());
                         //si le calcul de la matrice est pour l'algo UPGMA
@@ -220,7 +220,7 @@ public class AlgoPhenetique{
                 else if (listNoeud.get(k).getObjSequence()==null && listNoeud.get(i).getObjSequence()!=null){
                     indiceI = listNoeudPreced.indexOf(listNoeud.get(i));
                     //seulement k à des enfants et il est le dernier cluster formé 
-                    if (listNoeud.get(listNoeud.size()-1)==listNoeud.get(k)){
+                    if (getLastNode()==listNoeud.get(k)){
                         indiceKEnfant1 = listNoeudPreced.indexOf(listNoeud.get(k).getEnfant1());
                         indiceKEnfant2 = listNoeudPreced.indexOf(listNoeud.get(k).getEnfant2());
                         //si le calcul de la matrice est pour l'algo UPGMA
@@ -243,7 +243,7 @@ public class AlgoPhenetique{
                 //les deux noeuds i et k ont des enfants
                 else{
                     //les deux noeuds ont des enfants et i est le dernier cluster formé
-                    if (listNoeud.get(listNoeud.size()-1)==listNoeud.get(i)){
+                    if (getLastNode()==listNoeud.get(i)){
                         indiceK = listNoeudPreced.indexOf(listNoeud.get(k));
                         indiceIEnfant1 = listNoeudPreced.indexOf(listNoeud.get(i).getEnfant1());
                         indiceIEnfant2 = listNoeudPreced.indexOf(listNoeud.get(i).getEnfant2());
@@ -257,7 +257,7 @@ public class AlgoPhenetique{
                         }
                     }
                     //les deux noeuds ont des enfants et k est le dernier cluster formé
-                    else if (listNoeud.get(listNoeud.size()-1)==listNoeud.get(k)){
+                    else if (getLastNode()==listNoeud.get(k)){
                         indiceI = listNoeudPreced.indexOf(listNoeud.get(i));
                         indiceKEnfant1 = listNoeudPreced.indexOf(listNoeud.get(k).getEnfant1());
                         indiceKEnfant2 = listNoeudPreced.indexOf(listNoeud.get(k).getEnfant2());
@@ -398,6 +398,13 @@ public class AlgoPhenetique{
         return feuillesPlusEloignees;
     }
     
+    /**
+     * Renvoie le dernier noeud de la liste.
+     * @return le dernier noeud.
+     */
+    public static Node getLastNode(){
+        return listNoeud.get(listNoeud.size()-1);
+    }
 
     //-----------------------------Neighbor Joining-----------------------------------------
     /**
@@ -413,13 +420,12 @@ public class AlgoPhenetique{
          * @param listSeq
          */
         public static String nj(ArrayList<Sequence> listSeq){
-            Node lastNode=null;
             //initialise matrice distance et liste noeud
             matriceD = new Float[listSeq.size()][listSeq.size()];
             listNoeud = new ArrayList<Node>();
             initialiseListNode(listSeq);
             initialiseMatriceD();
-            correctionDistObs();
+            // correctionDistObs();
             // matriceD= new Float[][]{
             //     {0.0f, 5.0f, 4.0f, 7.0f, 6.0f, 8.0f},
             //     {5.0f, 0.0f, 7.0f, 10.0f, 9.0f, 11.0f},
@@ -457,34 +463,34 @@ public class AlgoPhenetique{
                     //retire les deux noeuds regroupés
                     removeNode();
                     //calcul longueur branche noeud parent avec ses enfants
-                    // System.out.println(listNoeud.get(listNoeud.size()-1).toString());
-                    calculLongueurBrancheNJ(distEnfants,listNoeud.get(listNoeud.size()-1).getEnfant1().getdivergenceNette(),listNoeud.get(listNoeud.size()-1).getEnfant2().getdivergenceNette());
+                    // System.out.println(getLastNode().toString());
+                    calculLongueurBrancheNJ(distEnfants,getLastNode().getEnfant1().getdivergenceNette(),getLastNode().getEnfant2().getdivergenceNette());
                     //calcul nouvelle matrice distance noeud parent et les autres noeuds
                     reCalculMatriceD(TypeAlgoTree.Neighbor_Joining);
-                    // System.out.println("matrice distance");
-                    // affichageMatriceD(matriceD);
+                    System.out.println("matrice distance");
+                    affichageMatriceD(matriceD);
                 }
                 else{
                     // System.out.println("size : "+listNoeud.size());
-                    Float longueurLastNode = matriceD[0][1];
-                    lastNode = (new Node(listNoeud.get(0), listNoeud.get(1)));
-                    listNoeud.add(lastNode);
+                    minMatrice(matriceD);
+                    //stocke valeur matrice distances des deux noeuds enfants pour le calcul de la branche
+                    Float distEnfants = matriceD[indiceNoeud1][indiceNoeud2];
+                    addCluster();
                     //retire les deux noeuds regroupés
                     removeNode();
                     // System.out.println("size : "+listNoeud.size());
                     //calcul longueur branche noeud parent avec ses enfants
-                    // System.out.println(listNoeud.get(listNoeud.size()-1).toString());
-                    lastNode.getEnfant1().setLongueurBranche(longueurLastNode);
-                    lastNode.getEnfant2().setLongueurBranche(longueurLastNode);
-                    // System.out.println(listNoeud.get(listNoeud.size()-1).getEnfant1().getLongueurBranche());
-                    // System.out.println(listNoeud.get(listNoeud.size()-1).getEnfant2().getLongueurBranche());
-
+                    // System.out.println(getLastNode().toString());
+                    getLastNode().getEnfant1().setLongueurBranche(distEnfants);
+                    getLastNode().getEnfant2().setLongueurBranche(distEnfants);
+                    // System.out.println(getLastNode().getEnfant1().getLongueurBranche());
+                    // System.out.println(getLastNode().getEnfant2().getLongueurBranche());
                 }
             }
-            // enracinerArbre(lastNode);
+            // enracinerArbre(getLastNode());
             // printArbre(System.out);
-            System.out.print(Newick(lastNode)+"\n");
-            return Newick(lastNode);
+            System.out.print(Newick(getLastNode())+"\n");
+            return Newick(getLastNode());
         }
 
         /**
@@ -500,8 +506,8 @@ public class AlgoPhenetique{
             // System.out.println("longueur enfant 1 : "+dEnfant1);
             // System.out.println("longueur enfant 2 : "+dEnfant2);
             System.out.println("");
-            listNoeud.get(listNoeud.size()-1).getEnfant1().setLongueurBranche(dEnfant1);
-            listNoeud.get(listNoeud.size()-1).getEnfant2().setLongueurBranche(dEnfant2);
+            getLastNode().getEnfant1().setLongueurBranche(dEnfant1);
+            getLastNode().getEnfant2().setLongueurBranche(dEnfant2);
         }
 
         /**
@@ -559,15 +565,15 @@ public class AlgoPhenetique{
          * @param listSeq
          */
         public static String upgma(ArrayList<Sequence> listSeq){
-            Node lastNode=null;
+            // Node lastNode=null;
             //initialise matrice distance et liste noeud
             matriceD = new Float[listSeq.size()][listSeq.size()];
             listNoeud = new ArrayList<Node>();
             initialiseListNode(listSeq);
             initialiseMatriceD();
-            correctionDistObs();
-            // affichageMatriceD(matriceD);
-            // System.out.println("");
+            // correctionDistObs();
+            System.out.println("matrice distance");
+            affichageMatriceD(matriceD);
             Float min = 0.f;
             while (listNoeud.size()>=2){
                 if (listNoeud.size()>2){
@@ -580,32 +586,30 @@ public class AlgoPhenetique{
                     removeNode();
                     //calcul longueur branche noeud parent avec ses enfants
                     calculLongueurBranche(min);
-                    // System.out.println(listNoeud.get(listNoeud.size()-1).getEnfant1().getLongueurBranche());
-                    // System.out.println(listNoeud.get(listNoeud.size()-1).getEnfant2().getLongueurBranche());
+                    // System.out.println(getLastNode().getEnfant1().getLongueurBranche());
+                    // System.out.println(getLastNode().getEnfant2().getLongueurBranche());
                     reCalculMatriceD(TypeAlgoTree.UPGMA);
-                    // affichageMatriceD(matriceD);
-                    // System.out.println("");
+                    System.out.println("matrice distance");
+                    affichageMatriceD(matriceD);
                 }
                 else{
                     // System.out.println("size : "+listNoeud.size());
                     //noeud racine parent des deux noeuds restants
                     min = minMatrice(matriceD);
-                    lastNode = new Node(listNoeud.get(0), listNoeud.get(1));
-                    listNoeud.add(lastNode);
+                    addCluster();
                     //retire les deux noeuds regroupés
                     removeNode();
                     // System.out.println("size : "+listNoeud.size());
                     //hauteur noeud parent égale moyenne des distances des deux enfants
-                    // lastNode.setLongueurBranche(calculLongueurBranche(min));
-                    calculLongueurBranche(min, lastNode);
-                    // System.out.println(listNoeud.get(listNoeud.size()-1).getEnfant1().getLongueurBranche());
-                    // System.out.println(listNoeud.get(listNoeud.size()-1).getEnfant2().getLongueurBranche());
+                    calculLongueurBranche(min);
+                    // System.out.println(getLastNode().getEnfant1().getLongueurBranche());
+                    // System.out.println(getLastNode().getEnfant2().getLongueurBranche());
                 }
             }
-            // enracinerArbre(lastNode);
+            // enracinerArbre(getLastNode());
             // printArbre(System.out);
-            System.out.print(Newick(lastNode)+"\n");
-            return Newick(lastNode);
+            System.out.print(Newick(getLastNode())+"\n");
+            return Newick(getLastNode());
         }
 
         /**
@@ -614,22 +618,12 @@ public class AlgoPhenetique{
          * @return la longueur de la branche du noeud. 
          */
         public static void calculLongueurBranche(Float distance){
-            while(listNoeud.get(listNoeud.size()-1).getEnfant1()!=null){
-                
-            listNoeud.get(listNoeud.size()-1).getEnfant1().setLongueurBranche(0.5f*distance);
-            listNoeud.get(listNoeud.size()-1).getEnfant2().setLongueurBranche(0.5f*distance);
-            }
-        }
-
-        /**
-         * Calcul la longueur de la branche du dernier noeud en faisant la moyenne des distances des deux enfants.
-         * @param distance la distance entre les deux enfants.
-         * @param last dernier noeud formé
-         * @return la longueur de la branche du noeud. 
-         */
-        public static void calculLongueurBranche(Float distance, Node last){
-            last.getEnfant1().setLongueurBranche(0.5f*distance);
-            last.getEnfant2().setLongueurBranche(0.5f*distance);
+            //calcul longueur noeud k
+            Float hauteurNoeud = 0.5f*(distance+getLastNode().getEnfant1().getLongueurBranche()+getLastNode().getEnfant2().getLongueurBranche());
+            getLastNode().setLongueurBranche(hauteurNoeud);
+            //calcul longueur enfants
+            getLastNode().getEnfant1().setLongueurBranche(hauteurNoeud-getLastNode().getEnfant1().getLongueurBranche());
+            getLastNode().getEnfant2().setLongueurBranche(hauteurNoeud-getLastNode().getEnfant2().getLongueurBranche());
         }
 
         /**
