@@ -47,9 +47,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import outils.AlgoPhenetique;
 import outils.Sequence;
 import outils.TypeAlgoTree;
 import outils.TypeSeq;
+import outils.AlgoPhenetique.NJ;
 import outils.AlgoPhenetique.Upgma;
 
 
@@ -364,13 +366,21 @@ public class Menu extends JFrame {
 							,(TypeSeq) choixTypeSequence.getSelectedItem());
 						query.setEnTeteAllSequence();
 						query.setAllSequences();
-						//recupere la liste des séquences avec l'en-tête et la séquence modifié
+						//recupere la liste des séquences avec les en-têtes et les séquences modifiées.
 						ArrayList<Sequence> listSeq = query.getListSequence();
+						// for (Sequence s: listSeq){
+						// 	print(s.toString());
+						// }
 						//reconstruit l'arbre selon l'algo choisi
 						if (choixTypeAlgoTree.getSelectedItem() == TypeAlgoTree.UPGMA){
-							Upgma.upgma(listSeq);
+							//recupere le format newick de l'arbre
+							String resUpgma = Upgma.upgma(listSeq);
+							AlgoPhenetique.drawTreeFromNewick(resUpgma);
 						}
-
+						else if (choixTypeAlgoTree.getSelectedItem() == TypeAlgoTree.Neighbor_Joining){
+							String resNJ = NJ.nj(listSeq);
+							AlgoPhenetique.drawTreeFromNewick(resNJ);
+						}
 					}	
 					else
 						throw new IllegalArgumentException();
@@ -380,9 +390,9 @@ public class Menu extends JFrame {
 				}
 			}
 
-			// private void print(String printAllSequence) {
-			// 	System.out.println(printAllSequence);
-			// }
+			private void print(String printAllSequence) {
+				System.out.println(printAllSequence);
+			}
 		});
 	}
 

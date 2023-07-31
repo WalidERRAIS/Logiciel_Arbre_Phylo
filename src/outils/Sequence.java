@@ -43,6 +43,7 @@ public class Sequence {
 		this.typeSeq = typeSeq;
 		//Créer une liste de sequences à partir de toutes les sequences dans la query.
 		for (int i=0; i<nbSeq; i++) {
+            //taille des séquences créés égale zéro, changer la taille dans setAllSequence.
 			this.listSeq.add(new Sequence("Sequence_"+(i+1), "", typeSeq));
 		}
 	}
@@ -63,21 +64,24 @@ public class Sequence {
 	}
 
     /**
-	 * modifie l'enTete de chaque séquences.
+	 * Modifie l'enTete de chaque séquences.
 	 */
 	public void setEnTeteAllSequence() {
 		Pattern nomSeqPattern= Pattern.compile("^>.+\\n?", Pattern.MULTILINE);
 		Matcher nomSeqMatch = nomSeqPattern.matcher(this.sequence); //pattern à tester dans la query
 		for (int i=0; i<this.listSeq.size(); i++) {
 			if (nomSeqMatch.find()) {
-				//enregistre la sous-séquence comme en-tête et supprime les chevrons.
-				this.listSeq.get(i).setEnTete(nomSeqMatch.group().replace(">", ""));
+                //enregistre la sous-séquence comme en-tête et supprime les chevrons.
+                String enTete = nomSeqMatch.group().replace(">", "");
+                enTete = enTete.replace(" ", "_");
+                //remplace les espaces vides par des "_"
+                getSequenceAt(i).setEnTete(enTete);
 			}
 		}
 	}
 
 	/**
-	 * modifie les séquences.
+	 * Modifie les séquences.
 	 */
 	public void setAllSequences() {
 		Pattern seqPattern= Pattern.compile("^[ABCDEFGHIKLMNPQRSTVWXYZ-]+", Pattern.MULTILINE|Pattern.CASE_INSENSITIVE);
@@ -85,7 +89,9 @@ public class Sequence {
 		for (int i=0; i<this.listSeq.size(); i++) {
 			if (seqMatch.find()) {
                 //enregistre la sous-séquence trouvé avec le pattern comme la séquence.
-				this.listSeq.get(i).setSequence(seqMatch.group());
+				getSequenceAt(i).setSequence(seqMatch.group());
+                //modifie la taille des séquences
+				getSequenceAt(i).setLengthSeq(getSequenceAt(i).sequence.length());
 			}
 		}
 	}
@@ -189,6 +195,6 @@ public class Sequence {
      */
     @Override
     public String toString() {
-        return "Sequence [enTete=" + this.enTete + ", sequence=" + this.sequence + ", typeSeq=" + this.typeSeq + "]";
+        return "Sequence [enTete= " + this.enTete + ", sequence= " + this.sequence + ", typeSeq= " + this.typeSeq + "]\n";
     }
 }

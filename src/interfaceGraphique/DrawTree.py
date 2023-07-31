@@ -13,7 +13,7 @@ from Bio import Phylo
 newick_string_nj = str(sys.argv[1])
 tree_nj = Phylo.read(StringIO(newick_string_nj), 'newick')
 # Représenter l'arbre non enraciné
-Phylo.draw(tree_nj)
+Phylo.draw(tree_nj, )
 
 # Lire l'arbre à partir d'une séquence Newick
 newick_string_upgma = str(sys.argv[2])
