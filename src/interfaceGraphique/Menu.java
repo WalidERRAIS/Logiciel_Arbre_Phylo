@@ -22,6 +22,7 @@ import java.awt.geom.Point2D.Float;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 
@@ -47,12 +48,17 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.biojava.nbio.core.alignment.template.Profile;
+import org.biojava.nbio.core.sequence.DNASequence;
+import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
+
 import outils.AlgoPhenetique;
 import outils.Sequence;
 import outils.TypeAlgoTree;
 import outils.TypeSeq;
 import outils.AlgoPhenetique.NJ;
 import outils.AlgoPhenetique.Upgma;
+import outils.MultipleAlignment;
 
 
 public class Menu extends JFrame {
@@ -78,15 +84,15 @@ public class Menu extends JFrame {
 	private JLabel labelGapPenalty;
 	private JTextField gapPenalty;
 	private JButton btnRunMultipleAlignment;
-	JPanel panelLabelStepOne;
-	JPanel panelLabelChoixTypeSequence;
-	JPanel panelChoixTypeSequence;
-	JPanel panelLabelSequenceFormat;
-	JPanel panelFichier;
-	JPanel panelLabelStepTwo;
-	JPanel panelGap;
-	JPanel panelFinal;
-	JPanel panelEntrezSequence;
+	private JPanel panelLabelStepOne;
+	private JPanel panelLabelChoixTypeSequence;
+	private JPanel panelChoixTypeSequence;
+	private JPanel panelLabelSequenceFormat;
+	private JPanel panelFichier;
+	private JPanel panelLabelStepTwo;
+	private JPanel panelGap;
+	private JPanel panelFinal;
+	private JPanel panelEntrezSequence;
 	private JLabel labelStepOneTree;
 	private JPanel panelLabelStepOneTree;
 	private JLabel labelChoixAlgoTree;
@@ -501,7 +507,7 @@ public class Menu extends JFrame {
 	 * Affiche une liste pour choisir le type de séquences
 	 */
 	private void createBoxChoixTypeSequence(JInternalFrame actualFrame) {
-		TypeSeq[] typeSequence = new TypeSeq[]{TypeSeq.ADN,TypeSeq.PROTEINE,TypeSeq.ARN};
+		TypeSeq[] typeSequence = new TypeSeq[]{TypeSeq.ADN,TypeSeq.PROTEINE};
 		choixTypeSequence = new JComboBox(typeSequence);
 		choixTypeSequence.setPreferredSize(new Dimension(750, 50));
 		panelChoixTypeSequence = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -789,7 +795,7 @@ public class Menu extends JFrame {
 					if (sequenceFichier==null)
 						seq= entrezSequence.getText();
 					//si cadre entrer sequence null prend fichier choisi
-					else if (entrezSequence.getText()==null) 
+					else if (entrezSequence.getText().isEmpty()) 
 						seq= sequenceFichier.toString();
 					//si les deux sont pleins prend fichier choisi
 					else if ((sequenceFichier!=null)&&(entrezSequence.getText()!=null))
@@ -804,13 +810,23 @@ public class Menu extends JFrame {
 							,(TypeSeq) choixTypeSequence.getSelectedItem());
 						query.setEnTeteAllSequence();
 						query.setAllSequences();
+						//recupere la liste des séquences avec les en-têtes et les séquences modifiées.
+						ArrayList<Sequence> listSeq = query.getListSequence();
+						// for (Sequence s: listSeq){
+						// 	print(s.toString());
+						// }
 						// print(query.printAllSequence());
+						Profile<DNASequence, NucleotideCompound> alignment = MultipleAlignment.multipleAlignmentAdn(listSeq);
 					}	
 					else
 						throw new IllegalArgumentException();
 				}
 				catch (IllegalArgumentException e1) {
 					JOptionPane.showMessageDialog(entrezSequence,"Erreur! Entrez au moins deux séquences au format fasta!","Alert",JOptionPane.WARNING_MESSAGE);     
+				}
+				catch (FileNotFoundException e2) {
+					System.err.println("Erreur : Fichier Matrice introuvable.");
+					e2.printStackTrace();
 				}
 			}
 
