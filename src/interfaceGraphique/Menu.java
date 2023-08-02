@@ -21,6 +21,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Float;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -28,14 +29,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -49,6 +55,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.biojava.nbio.core.alignment.template.Profile;
 import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
@@ -56,6 +63,10 @@ import org.biojava.nbio.core.sequence.DNASequence;
 import org.biojava.nbio.core.sequence.ProteinSequence;
 import org.biojava.nbio.core.sequence.compound.AminoAcidCompound;
 import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
+
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.ast.Node;
+import com.vladsch.flexmark.html.HtmlRenderer;
 
 import outils.AlgoPhenetique;
 import outils.Sequence;
@@ -109,6 +120,7 @@ public class Menu extends JFrame {
 	private JLabel labelSequenceFormatTree;
 	private JPanel panelLabelSequenceFormatTree;
 	private JButton btnRunTree;
+	private JPanel readmePanel;
 	
 
     /**
@@ -132,6 +144,12 @@ public class Menu extends JFrame {
 		contentPane.setLayout(new BorderLayout());
 
 		/*
+		 * Ouvrir automatiquement la page d'accueil en appelant la méthode displayReadmePanel()
+		 */
+		readmePanel = displayReadmePanel();
+		contentPane.add(readmePanel, BorderLayout.CENTER);
+
+		/*
 		 * Ajout de la barre d'outils au content pane
 		 */
 		contentPane.add(createToolBar(), BorderLayout.NORTH);
@@ -148,6 +166,37 @@ public class Menu extends JFrame {
 		 */
 		JToolBar toolBar = new JToolBar();
 		toolBar.setOrientation(SwingConstants.HORIZONTAL);
+
+		/*
+		 * Bouton "Accueil"
+		 */ 
+		JButton btnAccueil = new JButton("ACCUEIL");
+		toolBar.add(btnAccueil);
+		btnAccueil.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (internalFrame != null) {
+					internalFrame.dispose();
+				}
+
+				if (internalFrameTree != null) {
+					internalFrameTree.dispose();
+				}
+		
+				// Supprimez le JPanel contenant le texte explicatif s'il existe
+				if (readmePanel != null) {
+					contentPane.remove(readmePanel);
+					readmePanel = null;
+				}
+
+				// Affichez à nouveau le readmePanel en appelant la nouvelle méthode
+				readmePanel = displayReadmePanel();
+				contentPane.add(readmePanel, BorderLayout.CENTER);
+				// contentPane.revalidate();
+				// contentPane.repaint();
+			}
+		});
+
 		/*
 		 * Bouton Align
 		 */
@@ -161,6 +210,12 @@ public class Menu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try{
+					// Supprimez le JPanel contenant le texte explicatif s'il existe
+					if (readmePanel != null) {
+						contentPane.remove(readmePanel);
+						readmePanel = null;
+					}
+
 					if ((internalFrame==null || internalFrame.isClosed()) && internalFrameTree==null){
 						contentPane.add(createInternalFrameAlignement());
 					}
@@ -191,6 +246,12 @@ public class Menu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try{
+					// Supprimez le JPanel contenant le texte explicatif s'il existe
+					if (readmePanel != null) {
+						contentPane.remove(readmePanel);
+						readmePanel = null;
+					}
+
 					if ((internalFrameTree==null || internalFrameTree.isClosed()) && internalFrame==null){
 						contentPane.add(createInternalFrameTree());
 					}
@@ -209,6 +270,44 @@ public class Menu extends JFrame {
 
 		return toolBar;
 	}
+
+	/**
+	 * Affiche le contenu du fichier Readme.md
+	 * @return le panel r
+	 */
+	private JPanel displayReadmePanel() {
+		// Lecture du contenu du fichier "readme.md"
+		StringBuilder readmeContent = new StringBuilder();
+		try (BufferedReader reader = new BufferedReader(new FileReader("README.md"))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				readmeContent.append(line).append("\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
+		// Convertir le contenu Markdown en HTML
+		Parser parser = Parser.builder().build();
+		Node document = parser.parse(readmeContent.toString());
+		HtmlRenderer renderer = HtmlRenderer.builder().build();
+		String htmlContent = renderer.render(document);
+	
+		// Créez un JEditorPane pour afficher le contenu HTML
+		JEditorPane readmeEditorPane = new JEditorPane("text/html", htmlContent);
+		readmeEditorPane.setEditable(false);
+	
+		// Ajoutez le JEditorPane au JScrollPane pour permettre le défilement
+		JScrollPane scrollPane = new JScrollPane(readmeEditorPane);
+	
+		// Créez un JPanel pour contenir le JScrollPane et ajustez les marges si nécessaire
+		JPanel readmePanel = new JPanel(new BorderLayout());
+		readmePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		readmePanel.add(scrollPane, BorderLayout.CENTER);
+	
+		return readmePanel;
+	}
+	
 
 	/**
 	 * Construction d'un internal frame pour la reconstruction d'arbre.
@@ -852,12 +951,13 @@ public class Menu extends JFrame {
 						
 						//generer resultat alignement multiple dans fichier fasta 
 						StringBuilder fastaContent = MultipleAlignment.multipleAlignment(listSeq, valueGapPenalty, valueExtendPenalty);
-						File outputFile = new File("C:\\Users\\pietr\\Desktop\\output.fasta");
-						FileWriter writer = new FileWriter(outputFile);
-						writer.write(fastaContent.toString());
-						writer.close();
+						// File outputFile = new File("\\Desktop\\output.fasta");
+						// FileWriter writer = new FileWriter(outputFile);
+						// writer.write(fastaContent.toString());
+						// writer.close();
 
-						System.out.println("Alignement enregistré avec succès dans " + outputFile.getAbsolutePath());
+						// System.out.println("Alignement enregistré avec succès dans " + outputFile.getAbsolutePath());
+						displayAlignmentResult(fastaContent.toString());
 					}
 					//si les deux sont null ou si moins de 2 sequences fasta
 					else
@@ -870,9 +970,9 @@ public class Menu extends JFrame {
 				// 	System.err.println("Erreur : Fichier Matrice introuvable.");
 				// 	e2.printStackTrace();
 				// }
- 				catch (IOException e3) {
-					e3.printStackTrace();
-				}
+ 				// catch (IOException e3) {
+				// 	e3.printStackTrace();
+				// }
 			}
 
 			// private void print(String printAllSequence) {
@@ -880,5 +980,84 @@ public class Menu extends JFrame {
 			// }
 		});
 		
+	}
+
+	/**
+	 * Affiche le résultat de l'alignement dans une fenetre de dialogue.
+	 * @param fastaContent résultat de l'alignement au format fasta
+	 */
+	private void displayAlignmentResult(String fastaContent) {
+        JDialog dialog = new JDialog(this, "Résultat de l'alignement multiple");
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setLayout(new BorderLayout());
+
+
+        // Créez barre de menu avec l'item "Save As"
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem saveAsItem = new JMenuItem("Save As...");
+
+        // ActionListener pour la sauvegarde
+        saveAsItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // sauvegarde le fichier fasta
+				saveAlignmentResult(fastaContent);
+            }
+        });
+
+        fileMenu.add(saveAsItem);
+        menuBar.add(fileMenu);
+        dialog.setJMenuBar(menuBar);
+
+        // Affiche le contenu au format fasta dans la fenêtre
+        JTextArea textArea = new JTextArea(fastaContent);
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(400, 300));
+        dialog.add(scrollPane, BorderLayout.CENTER);
+
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+		dialog.setResizable(true);
+    }
+
+
+	/**
+	 * Sauvegarde le résultat de l'alignement dans un fichier fasta.
+	 * @param fastaContent
+	 */
+	private void saveAlignmentResult(String fastaContent) {
+		JFileChooser fileChooser = new JFileChooser();
+		//filtrer les fichiers .fasta
+		fileChooser.setFileFilter(new FiltreExtensionFichier());
+	
+		int option = fileChooser.showSaveDialog(this);
+		if (option == JFileChooser.APPROVE_OPTION) {
+			try (BufferedWriter writer = new BufferedWriter(new FileWriter(appendFastaExtension(fileChooser.getSelectedFile())))) {
+				writer.write(fastaContent);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Ajoute l'extension .fasta
+	 * @param file fichier résultat de l'alignement.
+	 * @return le fichier résultat de l'alignement.
+	 */
+	private File appendFastaExtension(File file) {
+		//vérifie si le nom de fichier contient déjà l'extension .fasta
+		String fileName = file.getName();
+		if (!fileName.toLowerCase().endsWith(".fasta")) {
+			// Ajoutez l'extension .fasta si elle n'est pas déjà présente
+			return new File(file.getParentFile(), fileName + ".fasta");
+		}
+		return file;
 	}
 }

@@ -91,7 +91,7 @@ public class MultipleAlignment {
 
             // Effectuer l'alignement
             Profile<DNASequence, NucleotideCompound> alignment = Alignments.getMultipleSequenceAlignment(dnaSeqList, matrix, gap);
-            System.out.println(alignment);
+            // System.out.println(alignment);
 
             // Générer le contenu du fichier FASTA à partir du Profile
             for (DNASequence seq : dnaSeqList) {
@@ -115,7 +115,7 @@ public class MultipleAlignment {
             Profile<ProteinSequence, AminoAcidCompound> alignment = Alignments.getMultipleSequenceAlignment(proteinSeqList, matrix, gap);
 
             // Afficher l'alignement
-            System.out.println(alignment);
+            // System.out.println(alignment);
 
             // Générer le contenu du fichier FASTA à partir du Profile
             for (ProteinSequence seq : proteinSeqList) {

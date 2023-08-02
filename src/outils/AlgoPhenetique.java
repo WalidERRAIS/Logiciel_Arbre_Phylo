@@ -306,121 +306,58 @@ public class AlgoPhenetique{
         }
     }
 
-    public static void enracinerArbre(Node last) {
-        // Trouver les deux feuilles les plus éloignées dans l'arbre
-        Node[] feuillesPlusEloignees = trouverFeuillesPlusEloignees(last);
-        System.out.println(feuillesPlusEloignees[0].getObjSequence().toString());
-        System.out.println(feuillesPlusEloignees[1].getObjSequence().toString());
-
-
-        // // Créer un nouveau nœud qui sera la racine de l'arbre enraciné
-        // racine = new Node(feuillesPlusEloignees[0], feuillesPlusEloignees[1]);
-        
-        // // Calculer la longueur de la branche de la nouvelle racine aux feuilles les plus éloignées
-        // Float distanceRacineA = feuillesPlusEloignees[0].getLongueurBranche();
-        // Float distanceRacineC = feuillesPlusEloignees[1].getLongueurBranche();
-        // racine.setLongueurBranche((distanceRacineA + distanceRacineC) / 2.0f);
-        
-        // // Mettre à jour les longueurs de branche des feuilles les plus éloignées
-        // feuillesPlusEloignees[0].setLongueurBranche(feuillesPlusEloignees[0].getLongueurBranche() - nouvelleRacine.getLongueurBranche());
-        // feuillesPlusEloignees[1].setLongueurBranche(feuillesPlusEloignees[1].getLongueurBranche() - nouvelleRacine.getLongueurBranche());
-        
-        // // Mettre à jour le parent des feuilles les plus éloignées
-        // feuillesPlusEloignees[0].setParent(nouvelleRacine);
-        // feuillesPlusEloignees[1].setParent(nouvelleRacine);
-        
-        // // Mettre à jour la racine de l'arbre enraciné
-        // lastNode.setParent(nouvelleRacine);
-    }
-
-    //vers 2
     // public static void enracinerArbre(Node last) {
     //     // Trouver les deux feuilles les plus éloignées dans l'arbre
     //     Node[] feuillesPlusEloignees = trouverFeuillesPlusEloignees(last);
     //     System.out.println(feuillesPlusEloignees[0].getObjSequence().toString());
     //     System.out.println(feuillesPlusEloignees[1].getObjSequence().toString());
-    
-    //     // Calculer la distance moyenne entre les deux feuilles (8.75 dans votre cas)
-    //     float distanceMoyenne = 8.75f;
-    
-    //     // Identifier le nœud dont la somme des longueurs de branche jusqu'aux deux feuilles est inférieure ou égale à la distanceMoyenne
-    //     Node noeudRacine = trouverNoeudRacine(feuillesPlusEloignees[0], feuillesPlusEloignees[1], distanceMoyenne);
-    
-    //     if (noeudRacine != null) {
-    //         // Calculer la longueur de branche pour le nouveau nœud racine
-    //         float sommeLongueursFeuilles = feuillesPlusEloignees[0].getDistanceToNode(noeudRacine) + feuillesPlusEloignees[1].getDistanceToNode(noeudRacine);
-    //         float longueurBrancheNouvelleRacine = distanceMoyenne - sommeLongueursFeuilles;
-    
-    //         // Créer un nouveau nœud qui sera la racine de l'arbre enraciné
-    //         racine = new Node(null, null); // Création d'un nœud vide (la racine n'a pas de séquence)
-    
-    //         // Relier le nouveau nœud racine à l'ancien nœud parent avec la longueur de branche appropriée
-    //         noeudRacine.setParent(racine);
-    //         noeudRacine.setLongueurBranche(longueurBrancheNouvelleRacine);
-    
-    //         // Relier les feuilles les plus éloignées à la nouvelle racine avec une longueur de branche de distanceMoyenne
-    //         feuillesPlusEloignees[0].setParent(racine);
-    //         feuillesPlusEloignees[0].setLongueurBranche(distanceMoyenne);
-    //         feuillesPlusEloignees[1].setParent(racine);
-    //         feuillesPlusEloignees[1].setLongueurBranche(distanceMoyenne);
-    //     } else {
-    //         System.out.println("Impossible de trouver un nœud approprié pour l'enracinement.");
-    //     }
-    // }
-    
-    // // Fonction pour trouver le nœud dont la somme des longueurs de branche jusqu'aux deux feuilles est inférieure ou égale à la distanceMoyenne
-    // private static Node trouverNoeudRacine(Node feuille1, Node feuille2, float distanceMoyenne) {
-    //     // Liste des parents visités pour chaque feuille
-    //     ArrayList<Node> parentsFeuille1 = new ArrayList<>();
-    //     ArrayList<Node> parentsFeuille2 = new ArrayList<>();
-    
-    //     // Recherche du premier ancêtre commun en partant de feuille1
-    //     Node ancetreCommun = feuille1;
-    //     while (ancetreCommun != null) {
-    //         parentsFeuille1.add(ancetreCommun);
-    //         ancetreCommun = ancetreCommun.getParent();
-    //     }
-    
-    //     // Recherche du premier ancêtre commun en partant de feuille2
-    //     ancetreCommun = feuille2;
-    //     while (ancetreCommun != null) {
-    //         parentsFeuille2.add(ancetreCommun);
-    //         if (parentsFeuille1.contains(ancetreCommun)) {
-    //             return ancetreCommun; // On a trouvé le premier ancêtre commun
-    //         }
-    //         ancetreCommun = ancetreCommun.getParent();
-    //     }
-    
-    //     return null; // Aucun ancêtre commun trouvé
-    // }
-    
 
+
+    //     // // Créer un nouveau nœud qui sera la racine de l'arbre enraciné
+    //     // racine = new Node(feuillesPlusEloignees[0], feuillesPlusEloignees[1]);
+        
+    //     // // Calculer la longueur de la branche de la nouvelle racine aux feuilles les plus éloignées
+    //     // Float distanceRacineA = feuillesPlusEloignees[0].getLongueurBranche();
+    //     // Float distanceRacineC = feuillesPlusEloignees[1].getLongueurBranche();
+    //     // racine.setLongueurBranche((distanceRacineA + distanceRacineC) / 2.0f);
+        
+    //     // // Mettre à jour les longueurs de branche des feuilles les plus éloignées
+    //     // feuillesPlusEloignees[0].setLongueurBranche(feuillesPlusEloignees[0].getLongueurBranche() - nouvelleRacine.getLongueurBranche());
+    //     // feuillesPlusEloignees[1].setLongueurBranche(feuillesPlusEloignees[1].getLongueurBranche() - nouvelleRacine.getLongueurBranche());
+        
+    //     // // Mettre à jour le parent des feuilles les plus éloignées
+    //     // feuillesPlusEloignees[0].setParent(nouvelleRacine);
+    //     // feuillesPlusEloignees[1].setParent(nouvelleRacine);
+        
+    //     // // Mettre à jour la racine de l'arbre enraciné
+    //     // lastNode.setParent(nouvelleRacine);
+    // }
     
-    private static Node[] trouverFeuillesPlusEloignees(Node node) {
-        Float maxDistance = Float.MIN_VALUE;
-        Node[] feuillesPlusEloignees = new Node[2];
+    // private static Node[] trouverFeuillesPlusEloignees(Node node) {
+    //     Float maxDistance = Float.MIN_VALUE;
+    //     Node[] feuillesPlusEloignees = new Node[2];
     
-        // Parcours récursif de l'arbre pour trouver les feuilles les plus éloignées
-        List<Node> feuilles = node.getFeuilles();
-        int nbFeuilles = feuilles.size();
-        for (int i = 0; i < nbFeuilles - 1; i++) {
-            Node feuille1 = feuilles.get(i);
-            for (int j = i + 1; j < nbFeuilles; j++) {
-                Node feuille2 = feuilles.get(j);
-                // System.out.println(feuille1.getObjSequence().toString());
-                // System.out.println(feuille2.getObjSequence().toString());
-                float distance = feuille1.getDistanceToNode(feuille2);
-                // System.out.println(distance);
-                if (distance > maxDistance) {
-                    maxDistance = distance;
-                    feuillesPlusEloignees[0] = feuille1;
-                    feuillesPlusEloignees[1] = feuille2;
-                }
-            }
-        }
-        System.out.println("max dist : "+maxDistance);
-        return feuillesPlusEloignees;
-    }
+    //     // Parcours récursif de l'arbre pour trouver les feuilles les plus éloignées
+    //     List<Node> feuilles = node.getFeuilles();
+    //     int nbFeuilles = feuilles.size();
+    //     for (int i = 0; i < nbFeuilles - 1; i++) {
+    //         Node feuille1 = feuilles.get(i);
+    //         for (int j = i + 1; j < nbFeuilles; j++) {
+    //             Node feuille2 = feuilles.get(j);
+    //             // System.out.println(feuille1.getObjSequence().toString());
+    //             // System.out.println(feuille2.getObjSequence().toString());
+    //             float distance = feuille1.getDistanceToNode(feuille2);
+    //             // System.out.println(distance);
+    //             if (distance > maxDistance) {
+    //                 maxDistance = distance;
+    //                 feuillesPlusEloignees[0] = feuille1;
+    //                 feuillesPlusEloignees[1] = feuille2;
+    //             }
+    //         }
+    //     }
+    //     System.out.println("max dist : "+maxDistance);
+    //     return feuillesPlusEloignees;
+    // }
     
     /**
      * Renvoie le dernier noeud de la liste.
@@ -655,22 +592,22 @@ public class AlgoPhenetique{
          * Dessine l'arbre en partant de la racine.
          * @return la chaîne de caractères représentant l'arbre phylogénétique.
          */
-        public static String traversePreOrder() {
-            if (racine == null) {
-                return "";
-            }
-            StringBuilder sb = new StringBuilder();
-            sb.append("root (Longueur branche "+racine.getLongueurBranche()+")");
+        // public static String traversePreOrder() {
+        //     if (racine == null) {
+        //         return "";
+        //     }
+        //     StringBuilder sb = new StringBuilder();
+        //     sb.append("root (Longueur branche "+racine.getLongueurBranche()+")");
         
-            String pointerRight = "└──";
-            String pointerLeft = (racine.getEnfant2() != null) ? "├──" : "└──";
+        //     String pointerRight = "└──";
+        //     String pointerLeft = (racine.getEnfant2() != null) ? "├──" : "└──";
 
         
-            traverseNodes(sb, "", pointerLeft, racine.getEnfant1(), racine.getEnfant2() != null);
-            traverseNodes(sb, "", pointerRight, racine.getEnfant2(), false);
+        //     traverseNodes(sb, "", pointerLeft, racine.getEnfant1(), racine.getEnfant2() != null);
+        //     traverseNodes(sb, "", pointerRight, racine.getEnfant2(), false);
         
-            return sb.toString();
-        }
+        //     return sb.toString();
+        // }
 
         /**
          * Méthode récursive adaptée du site https://www.baeldung.com/java-print-binary-tree-diagram.
@@ -681,42 +618,43 @@ public class AlgoPhenetique{
          * @param node le noeud de l'arbre.
          * @param hasRightSibling si le noeud possède un noeud frère.
          */
-        public static void traverseNodes(StringBuilder sb, String padding, String pointer, Node node, boolean hasRightSibling) {
-            if (node != null) {
-                sb.append("\n");
-                sb.append(padding);
-                sb.append(pointer);
-                if (node.getObjSequence()!=null){
-                    sb.append(node.getObjSequence().getEnTete());
-                }
-                else if (node.getObjSequence()==null){
-                    //ajoute longueur branche du noeud
-                    sb.append("node(Longueur branche "+node.getLongueurBranche()+")");
-                }
+        // public static void traverseNodes(StringBuilder sb, String padding, String pointer, Node node, boolean hasRightSibling) {
+        //     if (node != null) {
+        //         sb.append("\n");
+        //         sb.append(padding);
+        //         sb.append(pointer);
+        //         if (node.getObjSequence()!=null){
+        //             sb.append(node.getObjSequence().getEnTete());
+        //         }
+        //         else if (node.getObjSequence()==null){
+        //             //ajoute longueur branche du noeud
+        //             sb.append("node(Longueur branche "+node.getLongueurBranche()+")");
+        //         }
 
-                StringBuilder paddingBuilder = new StringBuilder(padding);
-                if (hasRightSibling) {
-                    paddingBuilder.append("│  ");
-                } else {
-                    paddingBuilder.append("   ");
-                }
+        //         StringBuilder paddingBuilder = new StringBuilder(padding);
+        //         if (hasRightSibling) {
+        //             paddingBuilder.append("│  ");
+        //         } else {
+        //             paddingBuilder.append("   ");
+        //         }
                 
 
-                String paddingForBoth = paddingBuilder.toString();
-                String pointerRight = "└──";
-                String pointerLeft = (node.getEnfant2() != null) ? "├──" : "└──";
+        //         String paddingForBoth = paddingBuilder.toString();
+        //         String pointerRight = "└──";
+        //         String pointerLeft = (node.getEnfant2() != null) ? "├──" : "└──";
 
 
-                traverseNodes(sb, paddingForBoth, pointerLeft, node.getEnfant1(), node.getEnfant2() != null);
-                traverseNodes(sb, paddingForBoth, pointerRight, node.getEnfant2(), false);
-            }
-        }
+        //         traverseNodes(sb, paddingForBoth, pointerLeft, node.getEnfant1(), node.getEnfant2() != null);
+        //         traverseNodes(sb, paddingForBoth, pointerRight, node.getEnfant2(), false);
+        //     }
+        // }
 
         /**
          * Affiche l'arbre.
          */
-        public static void printArbre(PrintStream os) {
-            os.println(traversePreOrder()+"\n");
-        }
+        // public static void printArbre(PrintStream os) {
+        //     os.println(traversePreOrder()+"\n");
+        // }
+
     }
 }
