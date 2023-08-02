@@ -24,6 +24,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -49,7 +51,10 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import org.biojava.nbio.core.alignment.template.Profile;
+import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.biojava.nbio.core.sequence.DNASequence;
+import org.biojava.nbio.core.sequence.ProteinSequence;
+import org.biojava.nbio.core.sequence.compound.AminoAcidCompound;
 import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
 
 import outils.AlgoPhenetique;
@@ -83,6 +88,8 @@ public class Menu extends JFrame {
 	private JLabel labelStepTwo;
 	private JLabel labelGapPenalty;
 	private JTextField gapPenalty;
+	private JLabel labelExtendPenalty;
+	private JTextField extendPenalty;
 	private JButton btnRunMultipleAlignment;
 	private JPanel panelLabelStepOne;
 	private JPanel panelLabelChoixTypeSequence;
@@ -395,10 +402,6 @@ public class Menu extends JFrame {
 					JOptionPane.showMessageDialog(entrezSequence,"Erreur! Entrez au moins deux séquences au format fasta!","Alert",JOptionPane.WARNING_MESSAGE);     
 				}
 			}
-
-			private void print(String printAllSequence) {
-				System.out.println(printAllSequence);
-			}
 		});
 	}
 
@@ -470,6 +473,16 @@ public class Menu extends JFrame {
 		 * saisi gap penalty
 		 */
 		saisiGapPenalty();
+
+		/*
+		 * label penality extension gap
+		 */
+		createLabelExtendGapPenalty();
+
+		/*
+		 * saisi penality extension gap
+		 */
+		saisiExtendGapPenalty();
 
 		/*
 		 * bouton lance alignement multiple
@@ -757,12 +770,11 @@ public class Menu extends JFrame {
 	private void createLabelGapPenalty() {
 		labelGapPenalty = new JLabel("Gap Penalty : ");
 		labelGapPenalty.setFont(new Font("SansSerif", Font.PLAIN, 14));
-		panelGap = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		// labelStepOne.setHorizontalAlignment(JLabel.CENTER);
+		panelGap = new JPanel();
+		panelGap.setLayout(new FlowLayout(FlowLayout.LEFT, 25, 0));
 		panelGap.add(labelGapPenalty);
-		// labelGapPenalty.setBounds(6, 373, 102, 31);
-		// internalFrame.getContentPane().add(panelFinal);
 	}
+	
 
 	/**
 	 * Affiche un champs pour y entrer la valeur de pénalité de gap
@@ -772,6 +784,27 @@ public class Menu extends JFrame {
 		gapPenalty.setBounds(120, 375, 48, 28);
 		panelGap.add(gapPenalty);
 		gapPenalty.setColumns(10);
+		// internalFrame.getContentPane().add(panelGap);
+	}
+
+	/**
+	 * Affiche un cadre avec l'instruction d'entrer la pénalité d'extension de gap
+	 */
+	private void createLabelExtendGapPenalty() {
+		labelExtendPenalty = new JLabel("Extend Gap Penalty : ");
+		labelExtendPenalty.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		panelGap.add(labelExtendPenalty);
+	}
+	
+
+	/**
+	 * Affiche un champs pour y entrer la valeur de pénalité d'extension de gap
+	 */
+	private void saisiExtendGapPenalty() {
+		extendPenalty = new JTextField();
+		extendPenalty.setBounds(120, 375, 48, 28);
+		panelGap.add(extendPenalty);
+		extendPenalty.setColumns(10);
 		internalFrame.getContentPane().add(panelGap);
 	}
 
@@ -800,14 +833,11 @@ public class Menu extends JFrame {
 					//si les deux sont pleins prend fichier choisi
 					else if ((sequenceFichier!=null)&&(entrezSequence.getText()!=null))
 						seq= sequenceFichier.toString();
-					//si les deux sont null lance une exception
-					else
-						throw new IllegalArgumentException();
+					
 					//verifie si au moins 2 séquences au format fasta
 					int nbSeq= Sequence.nbSequencesFormatFasta(seq);
 					if (nbSeq>=2) {
-						Sequence query = new Sequence(nbSeq, seq, "SequenceQuery"
-							,(TypeSeq) choixTypeSequence.getSelectedItem());
+						Sequence query = new Sequence(nbSeq, seq, "SequenceQuery",(TypeSeq) choixTypeSequence.getSelectedItem());
 						query.setEnTeteAllSequence();
 						query.setAllSequences();
 						//recupere la liste des séquences avec les en-têtes et les séquences modifiées.
@@ -816,17 +846,32 @@ public class Menu extends JFrame {
 						// 	print(s.toString());
 						// }
 						// print(query.printAllSequence());
-						Profile<DNASequence, NucleotideCompound> alignment = MultipleAlignment.multipleAlignmentAdn(listSeq);
-					}	
+						//recupere valeurs parametres alignement multiple
+						int valueGapPenalty = Integer.parseInt(gapPenalty.getText());
+						int valueExtendPenalty = Integer.parseInt(extendPenalty.getText());
+						
+						//generer resultat alignement multiple dans fichier fasta 
+						StringBuilder fastaContent = MultipleAlignment.multipleAlignment(listSeq, valueGapPenalty, valueExtendPenalty);
+						File outputFile = new File("C:\\Users\\pietr\\Desktop\\output.fasta");
+						FileWriter writer = new FileWriter(outputFile);
+						writer.write(fastaContent.toString());
+						writer.close();
+
+						System.out.println("Alignement enregistré avec succès dans " + outputFile.getAbsolutePath());
+					}
+					//si les deux sont null ou si moins de 2 sequences fasta
 					else
 						throw new IllegalArgumentException();
 				}
 				catch (IllegalArgumentException e1) {
-					JOptionPane.showMessageDialog(entrezSequence,"Erreur! Entrez au moins deux séquences au format fasta!","Alert",JOptionPane.WARNING_MESSAGE);     
+					JOptionPane.showMessageDialog(entrezSequence,"Erreur! Entrez au moins deux séquences au format fasta ou saisissez des valeurs pour les paramètres!","Alert",JOptionPane.WARNING_MESSAGE);     
 				}
-				catch (FileNotFoundException e2) {
-					System.err.println("Erreur : Fichier Matrice introuvable.");
-					e2.printStackTrace();
+				// catch (FileNotFoundException e2) {
+				// 	System.err.println("Erreur : Fichier Matrice introuvable.");
+				// 	e2.printStackTrace();
+				// }
+ 				catch (IOException e3) {
+					e3.printStackTrace();
 				}
 			}
 

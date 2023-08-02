@@ -632,7 +632,7 @@ public class AlgoPhenetique{
             }
             // enracinerArbre(getLastNode());
             // printArbre(System.out);
-            System.out.print(Newick(getLastNode())+"\n");
+            // System.out.print(Newick(getLastNode())+"\n");
             return Newick(getLastNode());
         }
 

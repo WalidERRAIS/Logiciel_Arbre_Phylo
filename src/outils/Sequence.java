@@ -84,7 +84,7 @@ public class Sequence {
 	 * Modifie les séquences.
 	 */
 	public void setAllSequences() {
-		Pattern seqPattern= Pattern.compile("^[ABCDEFGHIKLMNPQRSTVWXYZ-]+", Pattern.MULTILINE|Pattern.CASE_INSENSITIVE);
+		Pattern seqPattern= Pattern.compile("^[ABCDEFGHIJKLMNPQRSTVWXYZ-]+", Pattern.MULTILINE|Pattern.CASE_INSENSITIVE);
 		Matcher seqMatch = seqPattern.matcher(this.sequence); //pattern à tester dans la query
 		for (int i=0; i<this.listSeq.size(); i++) {
 			if (seqMatch.find()) {
