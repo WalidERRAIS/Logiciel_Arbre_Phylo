@@ -255,13 +255,13 @@ public class Menu extends JFrame {
 	}
 
 	/**
-	 * Affiche le contenu du fichier Readme.md
+	 * Affiche le contenu du fichier Acceuil > ancien readme
 	 * @return le panel r
 	 */
 	private JPanel displayReadmePanel() {
-		// Lecture du contenu du fichier "readme.md"
+		// Lecture du contenu du fichier "Accueil.html"
 		StringBuilder readmeContent = new StringBuilder();
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("README.md"), "UTF-8"))) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("src\\Accueil.html"), "UTF-8"))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				readmeContent.append(line).append("\n");
