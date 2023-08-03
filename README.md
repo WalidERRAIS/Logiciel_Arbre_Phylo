@@ -1,6 +1,6 @@
 ### Ce logiciel vous permet d'aligner plusieurs séquences d'ADN ou de Protéine au format fasta et de reconstruire l'arbre phylogénétique des séquences avec l'algorithme UPGMA ou Neighbor Joining.
 
-*L'onglet ACCUEIL vous permet de revenir à cette page.*
+*L'onglet ACCUEIL vous permet de revenir à la page d'acceuil.*
 
 ### Étapes pour utiliser le logiciel :
         

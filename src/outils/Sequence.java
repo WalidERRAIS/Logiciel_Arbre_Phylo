@@ -49,7 +49,7 @@ public class Sequence {
 	}
 
    /**
-	 * retourne le nombre de séquence au format fasta 
+	 * Retourne le nombre de séquence au format fasta 
 	 * @param s correspond à la chaîne de caractère entrée par l'utilisateur
 	 * @return nbSequences correspond au nombre de séquence contenu dans la chaîne entrée en paramètre
 	 */

@@ -59,7 +59,9 @@ import outils.AlgoPhenetique.NJ;
 import outils.AlgoPhenetique.Upgma;
 import outils.MultipleAlignment;
 
-
+/**
+ * Classe pour la construction d'un Menu.
+ */
 public class Menu extends JFrame {
     //Attributs
 	JPanel contentPane;

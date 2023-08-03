@@ -19,6 +19,10 @@ public class AlgoPhenetique{
     private static Float[][] matriceD; //matrice de distances
     private static ArrayList<Node> listNoeud;
 
+    /**
+     * Dessine l'arbre avec le script Python à partir de l'arbre au format Newick.
+     * @param newickFormat l'arbre au format Newick.
+     */
     public static void drawTreeFromNewick(String newickFormat){
         try {
             ProcessBuilder builder = new ProcessBuilder("python",

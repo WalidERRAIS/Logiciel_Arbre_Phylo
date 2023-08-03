@@ -43,26 +43,27 @@ public class Node{
         n2.setParent(this);
     }
 
-    public ArrayList<Node> getFeuilles() {
-        ArrayList<Node> feuilles = new ArrayList<>();
-        collecterFeuilles(this, feuilles);
-        return feuilles;
-    }
     
-    private void collecterFeuilles(Node node, ArrayList<Node> feuilles) {
-        if (node.getEnfant1() == null && node.getEnfant2() == null) {
-            // Si le nœud courant n'a pas d'enfants, c'est une feuille
-            feuilles.add(node);
-        } else {
-            // Sinon, poursuivre la recherche dans les enfants
-            if (node.getEnfant1() != null) {
-                collecterFeuilles(node.getEnfant1(), feuilles);
-            }
-            if (node.getEnfant2() != null) {
-                collecterFeuilles(node.getEnfant2(), feuilles);
-            }
-        }
-    }
+    // public ArrayList<Node> getFeuilles() {
+    //     ArrayList<Node> feuilles = new ArrayList<>();
+    //     collecterFeuilles(this, feuilles);
+    //     return feuilles;
+    // }
+    
+    // private void collecterFeuilles(Node node, ArrayList<Node> feuilles) {
+    //     if (node.getEnfant1() == null && node.getEnfant2() == null) {
+    //         // Si le nœud courant n'a pas d'enfants, c'est une feuille
+    //         feuilles.add(node);
+    //     } else {
+    //         // Sinon, poursuivre la recherche dans les enfants
+    //         if (node.getEnfant1() != null) {
+    //             collecterFeuilles(node.getEnfant1(), feuilles);
+    //         }
+    //         if (node.getEnfant2() != null) {
+    //             collecterFeuilles(node.getEnfant2(), feuilles);
+    //         }
+    //     }
+    // }
     
     //version 2
     public float getDistanceToNode(Node autreNoeud) {
