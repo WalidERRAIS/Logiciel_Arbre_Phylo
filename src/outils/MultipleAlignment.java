@@ -2,17 +2,11 @@ package outils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.biojava.nbio.alignment.Alignments;
 import org.biojava.nbio.core.alignment.matrices.SimpleSubstitutionMatrix;
-import org.biojava.nbio.core.alignment.template.AlignedSequence;
 import org.biojava.nbio.core.alignment.template.Profile;
 import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.biojava.nbio.core.sequence.DNASequence;
@@ -20,16 +14,21 @@ import org.biojava.nbio.core.sequence.ProteinSequence;
 import org.biojava.nbio.core.sequence.compound.AmbiguityDNACompoundSet;
 import org.biojava.nbio.core.sequence.compound.AminoAcidCompound;
 import org.biojava.nbio.core.sequence.compound.AminoAcidCompoundSet;
-import org.biojava.nbio.core.sequence.compound.DNACompoundSet;
 import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
-import org.biojava.nbio.core.sequence.io.FastaWriterHelper;
 import org.biojava.nbio.alignment.SimpleGapPenalty;
 
-import org.biojava.nbio.phylo.ForesterWrapper;
 
-
+/**
+ * Classe pour effectuer l'alignement multiple.
+ */
 public class MultipleAlignment {
-
+    /**
+     * Méthode pour effectuer l'alignement multiple.
+     * @param listSeq liste des séquences à aligner.
+     * @param gapP penalité des gaps.
+     * @param extendP penalité extension des gaps.
+     * @return le résultat de l'alignement multiple.
+     */
     public static StringBuilder multipleAlignment(ArrayList<Sequence> listSeq, int gapP, int extendP) {
         // Initialiser list sequences
         List<DNASequence> dnaSeqList = new ArrayList<>();

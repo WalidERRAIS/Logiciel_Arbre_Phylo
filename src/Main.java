@@ -1,38 +1,9 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-
-import outils.AlgoPhenetique;
-import outils.Sequence;
-import outils.TypeSeq;
-import outils.AlgoPhenetique.Upgma;
-import outils.AlgoPhenetique.NJ;
-
-
 import interfaceGraphique.Menu;
 
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
-/*
- * To Do:
- * - connecter NJ au bouton reconstruction
- * - méthode poids moyen enracinement
- * - alignement clustal omega
- * - connecter alignement au bouton alignement
- * - ajouter sauvegarde fichier alignement
- * - ajouter sauvegarde resultat arbre
- * 
- * - remplacer par la suite mon calcul des distances (différences entre les séquences ) par la formule de la distance
- *  observée (S = M/L et D = 1 - S)
- * - d’appliquer une correction aux distances avec le modèle Jukes-Cantor
- * 
- * - ajouter recuperation sequences en ligne
- * 
- */
+
 public class Main {
     public static void main(String[] args) throws Exception {
         UIManager.setLookAndFeel(new NimbusLookAndFeel());
