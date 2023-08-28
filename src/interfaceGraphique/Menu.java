@@ -257,7 +257,7 @@ public class Menu extends JFrame {
 	}
 
 	/**
-	 * Affiche le contenu du fichier Acceuil > ancien readme
+	 * Affiche le contenu du fichier Accueil > ancien readme
 	 * @return le panel r
 	 */
 	private JPanel displayReadmePanel() {

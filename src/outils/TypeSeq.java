@@ -1,7 +1,7 @@
 package outils;
 
 /**
- * Les différents type de séquences possibles.
+ * Les différents types de séquences possibles.
  */
 public enum TypeSeq{
     ADN, PROTEINE

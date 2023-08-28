@@ -1,10 +1,6 @@
 package outils;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Classe externe contient les algos phenetique.
@@ -15,7 +11,7 @@ public class AlgoPhenetique{
     //indice des noeuds avec la distance minimale
     private static int indiceNoeud1 = 0, indiceNoeud2 = 0;
     //racine de l'arbre
-    private static Node racine;
+    // private static Node racine;
     private static Float[][] matriceD; //matrice de distances
     private static ArrayList<Node> listNoeud;
 
@@ -373,7 +369,7 @@ public class AlgoPhenetique{
 
     //-----------------------------Neighbor Joining-----------------------------------------
     /**
-     * Classe interne UPGMA construit un arbre phylogénétique avec l'algorithme Neighbor Joining.
+     * Classe interne NJ construit un arbre phylogénétique avec l'algorithme Neighbor Joining.
      */
     public static class NJ {
         private static Float[][] matriceModifie; //matrice de distances modifie.
@@ -418,6 +414,7 @@ public class AlgoPhenetique{
                     listNoeudPreced = new ArrayList<Node>(listNoeud);
                     //choisir distance modifie minimale 
                     //on ne stocke pas la valeur min dans une variable car on ne l'a reutilise pas
+                    //stocke les indices des noeuds
                     minMatrice(matriceModifie);
                     //stocke valeur matrice distances des deux noeuds enfants pour le calcul de la branche
                     Float distEnfants = matriceD[indiceNoeud1][indiceNoeud2];
