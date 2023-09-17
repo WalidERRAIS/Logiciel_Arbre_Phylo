@@ -473,7 +473,7 @@ public class AlgoPhenetique{
         }
 
         /**
-         * Calcul la matrice des distances modifiées, selon la formule : M(ij)=d(ij) - [r(i) + r(j)]/(N-2).
+         * Calcul la matrice des distances modifiées, selon la formule : M(ij) = d(ij) - r(i) - r(j).
          */
         public static void calculMatriceModifie(){
             //initialise matrice distances modifie

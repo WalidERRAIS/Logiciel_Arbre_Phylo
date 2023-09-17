@@ -439,7 +439,7 @@ public class Menu extends JFrame {
 		internalFrameTree.getContentPane().add(panelFinal);
 		btnRunTree.addActionListener(new ActionListener() {
 			/**
-			 * Au clic sur le bouton lance l'alignement multiple des séquences entrées 
+			 * Au clic sur le bouton lance la reconstruction d'arbre des séquences entrées 
 			 */
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -472,10 +472,12 @@ public class Menu extends JFrame {
 						if (choixTypeAlgoTree.getSelectedItem() == TypeAlgoTree.UPGMA){
 							//recupere le format newick de l'arbre
 							String resUpgma = Upgma.upgma(listSeq);
+							// System.out.println(resUpgma);
 							AlgoPhenetique.drawTreeFromNewick(resUpgma);
 						}
 						else if (choixTypeAlgoTree.getSelectedItem() == TypeAlgoTree.Neighbor_Joining){
 							String resNJ = NJ.nj(listSeq);
+							// System.out.println(resNJ);
 							AlgoPhenetique.drawTreeFromNewick(resNJ);
 						}
 					}	

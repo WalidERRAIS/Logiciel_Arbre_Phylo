@@ -4,7 +4,9 @@ from io import StringIO
 # subprocess.check_call([sys.executable, '-m', 'pip', 'install',"biopython"])
 # subprocess.check_call([sys.executable, '-m', 'pip', 'install',"matplotlib"])
 
+
 from Bio import Phylo
+import matplotlib.pyplot as plt
 
 # Récupérer les arguments depuis l'entrée standard (stdin)
 # print(str(sys.argv))

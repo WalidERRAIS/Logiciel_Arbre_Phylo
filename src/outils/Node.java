@@ -66,60 +66,60 @@ public class Node{
     // }
     
     //version 2
-    public float getDistanceToNode(Node autreNoeud) {
-        // Vérifier si l'autre nœud est une feuille et si les deux nœuds ont le même parent
-        if (autreNoeud.estFeuille() && this.getParent() == autreNoeud.getParent()) {
-            // Si les deux nœuds sont des feuilles et ont le même parent, la distance est égale à leur longueur de branche commune
-            return this.getLongueurBranche() + autreNoeud.getLongueurBranche();
-        }
+    // public float getDistanceToNode(Node autreNoeud) {
+    //     // Vérifier si l'autre nœud est une feuille et si les deux nœuds ont le même parent
+    //     if (autreNoeud.estFeuille() && this.getParent() == autreNoeud.getParent()) {
+    //         // Si les deux nœuds sont des feuilles et ont le même parent, la distance est égale à leur longueur de branche commune
+    //         return this.getLongueurBranche() + autreNoeud.getLongueurBranche();
+    //     }
     
-        // Sinon, appeler la méthode récursive pour trouver la distance entre les nœuds en passant la liste des parents visités
-        ArrayList<Node> parentsVisited = new ArrayList<>();
-        return findDistanceRecursive(this, autreNoeud, parentsVisited, 0);
-    }
+    //     // Sinon, appeler la méthode récursive pour trouver la distance entre les nœuds en passant la liste des parents visités
+    //     ArrayList<Node> parentsVisited = new ArrayList<>();
+    //     return findDistanceRecursive(this, autreNoeud, parentsVisited, 0);
+    // }
     
-    private float findDistanceRecursive(Node currentNode, Node targetNode, ArrayList<Node> parentsVisited, float lengthToCurrent) {
-        if (currentNode == targetNode) {
-            // Cas de base : si le nœud courant est le nœud cible, retourner la longueur de branche du nœud courant
-            return lengthToCurrent;
-        }
+    // private float findDistanceRecursive(Node currentNode, Node targetNode, ArrayList<Node> parentsVisited, float lengthToCurrent) {
+    //     if (currentNode == targetNode) {
+    //         // Cas de base : si le nœud courant est le nœud cible, retourner la longueur de branche du nœud courant
+    //         return lengthToCurrent;
+    //     }
     
-        // Rechercher le chemin vers le nœud cible dans les enfants du nœud courant
-        if (currentNode.getEnfant1() != null && currentNode.getEnfant1() != this && !parentsVisited.contains(currentNode.getEnfant1())) {
-            parentsVisited.add(currentNode);
-            float distanceToEnfant1 = findDistanceRecursive(currentNode.getEnfant1(), targetNode, parentsVisited, lengthToCurrent + currentNode.getEnfant1().getLongueurBranche());
-            if (distanceToEnfant1 >= 0) {
-                // Si le nœud cible est trouvé dans le sous-arbre de l'enfant1, retourner la distance
-                return distanceToEnfant1;
-            }
-        }
+    //     // Rechercher le chemin vers le nœud cible dans les enfants du nœud courant
+    //     if (currentNode.getEnfant1() != null && currentNode.getEnfant1() != this && !parentsVisited.contains(currentNode.getEnfant1())) {
+    //         parentsVisited.add(currentNode);
+    //         float distanceToEnfant1 = findDistanceRecursive(currentNode.getEnfant1(), targetNode, parentsVisited, lengthToCurrent + currentNode.getEnfant1().getLongueurBranche());
+    //         if (distanceToEnfant1 >= 0) {
+    //             // Si le nœud cible est trouvé dans le sous-arbre de l'enfant1, retourner la distance
+    //             return distanceToEnfant1;
+    //         }
+    //     }
     
-        if (currentNode.getEnfant2() != null && currentNode.getEnfant2() != this && !parentsVisited.contains(currentNode.getEnfant2())) {
-            parentsVisited.add(currentNode);
-            float distanceToEnfant2 = findDistanceRecursive(currentNode.getEnfant2(), targetNode, parentsVisited, lengthToCurrent + currentNode.getEnfant2().getLongueurBranche());
-            if (distanceToEnfant2 >= 0) {
-                // Si le nœud cible est trouvé dans le sous-arbre de l'enfant2, retourner la distance
-                return distanceToEnfant2;
-            }
-        }
+    //     if (currentNode.getEnfant2() != null && currentNode.getEnfant2() != this && !parentsVisited.contains(currentNode.getEnfant2())) {
+    //         parentsVisited.add(currentNode);
+    //         float distanceToEnfant2 = findDistanceRecursive(currentNode.getEnfant2(), targetNode, parentsVisited, lengthToCurrent + currentNode.getEnfant2().getLongueurBranche());
+    //         if (distanceToEnfant2 >= 0) {
+    //             // Si le nœud cible est trouvé dans le sous-arbre de l'enfant2, retourner la distance
+    //             return distanceToEnfant2;
+    //         }
+    //     }
     
-        // Si le nœud cible n'a pas été trouvé dans les sous-arbres et que le nœud courant a un parent, remonter les parents
-        if (currentNode.getParent() != null && !parentsVisited.contains(currentNode.getParent())) {
-            parentsVisited.add(currentNode.getParent());
-            float distanceToParent = findDistanceRecursive(currentNode.getParent(), targetNode, parentsVisited, lengthToCurrent + currentNode.getLongueurBranche());
-            if (distanceToParent >= 0) {
-                // Si le nœud cible est trouvé dans le sous-arbre d'un parent, retourner la distance
-                return distanceToParent;
-            }
-        }
+    //     // Si le nœud cible n'a pas été trouvé dans les sous-arbres et que le nœud courant a un parent, remonter les parents
+    //     if (currentNode.getParent() != null && !parentsVisited.contains(currentNode.getParent())) {
+    //         parentsVisited.add(currentNode.getParent());
+    //         float distanceToParent = findDistanceRecursive(currentNode.getParent(), targetNode, parentsVisited, lengthToCurrent + currentNode.getLongueurBranche());
+    //         if (distanceToParent >= 0) {
+    //             // Si le nœud cible est trouvé dans le sous-arbre d'un parent, retourner la distance
+    //             return distanceToParent;
+    //         }
+    //     }
     
-        // Si le nœud cible n'a pas été trouvé dans les sous-arbres, retourner -1
-        return -1;
-    }
+    //     // Si le nœud cible n'a pas été trouvé dans les sous-arbres, retourner -1
+    //     return -1;
+    // }
     
-    public boolean estFeuille() {
-        return (this.getEnfant1() == null && this.getEnfant2() == null);
-    }
+    // public boolean estFeuille() {
+    //     return (this.getEnfant1() == null && this.getEnfant2() == null);
+    // }
     
 
     /**
