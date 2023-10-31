@@ -386,7 +386,7 @@ public class AlgoPhenetique{
             listNoeud = new ArrayList<Node>();
             initialiseListNode(listSeq);
             initialiseMatriceD();
-            correctionDistObs();
+            // correctionDistObs();
             // matriceD= new Float[][]{
             //     {0.0f, 5.0f, 4.0f, 7.0f, 6.0f, 8.0f},
             //     {5.0f, 0.0f, 7.0f, 10.0f, 9.0f, 11.0f},
@@ -533,7 +533,7 @@ public class AlgoPhenetique{
             listNoeud = new ArrayList<Node>();
             initialiseListNode(listSeq);
             initialiseMatriceD();
-            correctionDistObs();
+            // correctionDistObs();
             // System.out.println("matrice distance");
             // affichageMatriceD(matriceD);
             Float min = 0.f;
@@ -550,6 +550,7 @@ public class AlgoPhenetique{
                     calculLongueurBranche(min);
                     // System.out.println(getLastNode().getEnfant1().getLongueurBranche());
                     // System.out.println(getLastNode().getEnfant2().getLongueurBranche());
+                    // System.out.println("");
                     reCalculMatriceD(TypeAlgoTree.UPGMA);
                     // System.out.println("matrice distance");
                     // affichageMatriceD(matriceD);

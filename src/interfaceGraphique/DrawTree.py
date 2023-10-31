@@ -1,7 +1,7 @@
 import subprocess
 import sys
 from io import StringIO
-# subprocess.check_call([sys.executable, '-m', 'pip', 'install',"biopython"])
+subprocess.check_call([sys.executable, '-m', 'pip', 'install',"biopython"])
 # subprocess.check_call([sys.executable, '-m', 'pip', 'install',"matplotlib"])
 
 

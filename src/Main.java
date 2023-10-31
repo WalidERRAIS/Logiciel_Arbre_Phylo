@@ -1,4 +1,13 @@
 import interfaceGraphique.Menu;
+import outils.Sequence;
+import outils.TypeSeq;
+import outils.AlgoPhenetique.NJ;
+import outils.AlgoPhenetique.Upgma;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.UIManager;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -64,8 +73,7 @@ public class Main {
         
         // try {
         //     ProcessBuilder builder = new ProcessBuilder("python",
-        //      "src\\interfaceGraphique\\DrawTree.py",
-        //       resNJ3, resUpgma3);
+        //      "src\\interfaceGraphique\\DrawTree.py",resUpgma);
         //     Process process = builder.start();
 
         //     BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
